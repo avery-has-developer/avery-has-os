@@ -1,13 +1,13 @@
 {
-  "domain": "avery_core",
-  "name": "Avery Core",
+  "domain": "avery_has_os",
+  "name": "Avery HAS OS",
   "codeowners": ["@avery-has-developer"],
   "config_flow": true,
   "dependencies": ["http", "frontend", "websocket_api"],
-  "documentation": "https://github.com/avery-has-developer/avery-core",
+  "documentation": "https://github.com/avery-has-developer/avery-has-os",
   "integration_type": "service",
   "iot_class": "local_push",
-  "issue_tracker": "https://github.com/avery-has-developer/avery-core/issues",
+  "issue_tracker": "https://github.com/avery-has-developer/avery-has-os/issues",
   "requirements": [],
   "version": "0.1.0"
 }

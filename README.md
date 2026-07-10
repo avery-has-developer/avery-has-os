@@ -3,7 +3,7 @@
   <img src="images/banner.png" alt="Avery HAS OS" width="100%">
 </p>
 
-<h1 align="center">Avery Core</h1>
+<h1 align="center">Avery HAS OS</h1>
 
 <p align="center">
   <strong>The foundation of the Avery HAS OS ecosystem —<br>
@@ -14,34 +14,34 @@
   <a href="https://github.com/hacs/integration"><img src="https://img.shields.io/badge/HACS-Custom-41BDF5.svg?style=for-the-badge" alt="HACS Custom"></a>
   <img src="https://img.shields.io/badge/Home%20Assistant-2024.4%2B-41BDF5.svg?style=for-the-badge&logo=home-assistant&logoColor=white" alt="Home Assistant 2024.4+">
   <img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg?style=for-the-badge" alt="License Apache 2.0">
-  <a href="https://github.com/avery-has-developer/avery-core/actions/workflows/validate.yml"><img src="https://img.shields.io/github/actions/workflow/status/avery-has-developer/avery-core/validate.yml?style=for-the-badge&label=validation" alt="Validation"></a>
+  <a href="https://github.com/avery-has-developer/avery-has-os/actions/workflows/validate.yml"><img src="https://img.shields.io/github/actions/workflow/status/avery-has-developer/avery-has-os/validate.yml?style=for-the-badge&label=validation" alt="Validation"></a>
 </p>
 
 ---
 
-## What is Avery Core?
+## What is Avery HAS OS?
 
-**Avery Core** is the shared runtime that powers the **Avery HAS OS** ecosystem —
+**Avery HAS OS** is the shared runtime that powers the **Avery HAS OS** ecosystem —
 a growing collection of beautifully designed Home Assistant cards, themes, and
 plugins that feel like one product instead of a pile of parts.
 
-Install Core once, and every Avery card and theme builds on the same foundation:
+Install Avery HAS OS once, and every Avery card and theme builds on the same foundation:
 a consistent design language, shared helpers, and a common runtime. It's small,
 fast, and stays out of your way.
 
-> **Install this first.** Avery cards and themes depend on Avery Core being present.
+> **Install this first.** Avery cards and themes depend on Avery HAS OS being present.
 
 <!-- Hero screenshot: replace images/dashboard.png with your Avery dashboard -->
 <p align="center">
   <img src="images/dashboard.png" alt="An Avery HAS OS dashboard" width="100%">
 </p>
 
-## Why Avery Core?
+## Why Avery HAS OS?
 
 - 🎨 **One cohesive design system** — every Avery card and theme shares the same
   tokens, spacing, and polish, so your dashboards look intentional.
 - 🧩 **A true foundation** — cards register against a single shared runtime
-  (`window.AveryCore`) instead of re-implementing the basics.
+  (`window.Avery`) instead of re-implementing the basics.
 - 🪶 **Light and native** — a standard Home Assistant integration with a tiny
   footprint. No cloud, no account, no tracking.
 - 🔓 **Free and open source** — Apache-2.0 licensed. The framework, cards, and
@@ -54,29 +54,29 @@ fast, and stays out of your way.
 ### HACS (recommended)
 
 1. In HACS, open the **⋮** menu → **Custom repositories**.
-2. Add `https://github.com/avery-has-developer/avery-core` with category
+2. Add `https://github.com/avery-has-developer/avery-has-os` with category
    **Integration**.
-3. Search for **Avery Core** in HACS and **Download** it.
+3. Search for **Avery HAS OS** in HACS and **Download** it.
 4. **Restart Home Assistant.**
-5. Go to **Settings → Devices & Services → Add Integration → Avery Core**.
+5. Go to **Settings → Devices & Services → Add Integration → Avery HAS OS**.
 
 > Once Avery HAS OS is in the HACS default store, steps 1–2 won't be needed —
 > you'll find it by searching HACS directly.
 
 ### Manual
 
-Copy `custom_components/avery_core` into your Home Assistant `config/custom_components/`
+Copy `custom_components/avery_has_os` into your Home Assistant `config/custom_components/`
 directory, restart, then add the integration as above.
 
 ## Configuration
 
-None. Avery Core sets itself up with a single click — there's nothing to configure.
-It exposes an `Avery Core` device with a **Version** sensor so you can see what's
+None. Avery HAS OS sets itself up with a single click — there's nothing to configure.
+It exposes an `Avery HAS OS` device with a **Version** sensor so you can see what's
 installed at a glance.
 
 ## The Avery HAS OS ecosystem
 
-Avery Core is the first piece. The suite of Avery cards and themes builds on top
+Avery HAS OS is the first piece. The suite of Avery cards and themes builds on top
 of it — a clock, weather, and more, all sharing this foundation.
 
 Avery HAS OS is **free today**, and the framework, cards, and themes here are
@@ -87,7 +87,7 @@ the open.
 
 ## Support
 
-- 🐛 Found a bug or have an idea? [Open an issue](https://github.com/avery-has-developer/avery-core/issues).
+- 🐛 Found a bug or have an idea? [Open an issue](https://github.com/avery-has-developer/avery-has-os/issues).
 
 ## Credits & license
 

@@ -1,11 +1,11 @@
-"""Avery Core — shared runtime + entitlement seam for the Avery HAS OS ecosystem.
+"""Avery HAS OS — shared runtime + entitlement seam for the Avery HAS OS ecosystem.
 
 Responsibilities (v0.1):
-  - Serve the shared frontend runtime (avery-core.js) and auto-load it on every
-    HA page, so cards can depend on `window.AveryCore` (design tokens, helpers,
+  - Serve the shared frontend runtime (avery-has-os.js) and auto-load it on every
+    HA page, so cards can depend on `window.Avery` (design tokens, helpers,
     and the entitlement seam) being present.
   - Expose the entitlement seam to the frontend over a WebSocket command.
-  - Register a version/health sensor. Because Avery Core is a real integration
+  - Register a version/health sensor. Because Avery HAS OS is a real integration
     (not just frontend resources), installs are counted in Home Assistant's
     public analytics — the ecosystem's adoption signal.
 
@@ -36,7 +36,7 @@ _WS_REGISTERED = False
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    """Set up Avery Core from a config entry."""
+    """Set up Avery HAS OS from a config entry."""
     global _FRONTEND_REGISTERED, _WS_REGISTERED
 
     hass.data.setdefault(DOMAIN, {})[entry.entry_id] = {"version": VERSION}
@@ -49,7 +49,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         # Load the shared runtime on every frontend page (as an ES module).
         frontend.add_extra_js_url(hass, f"{URL_BASE}/{FRONTEND_SCRIPT}")
         _FRONTEND_REGISTERED = True
-        _LOGGER.info("Avery Core frontend runtime registered at %s", URL_BASE)
+        _LOGGER.info("Avery HAS OS frontend runtime registered at %s", URL_BASE)
 
     if not _WS_REGISTERED:
         websocket_api.async_register_command(hass, ws_entitlements)
@@ -71,7 +71,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     return ok
 
 
-@websocket_api.websocket_command({"type": "avery_core/entitlements"})
+@websocket_api.websocket_command({"type": "avery_has_os/entitlements"})
 @callback
 def ws_entitlements(
     hass: HomeAssistant,

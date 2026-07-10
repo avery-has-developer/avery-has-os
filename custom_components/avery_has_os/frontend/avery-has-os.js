@@ -1,22 +1,22 @@
-// Avery Core — shared frontend runtime for the Avery HAS OS ecosystem.
+// Avery HAS OS — shared frontend runtime for the Avery HAS OS ecosystem.
 //
-// Served by the avery_core integration and auto-loaded on every Home Assistant
-// page. Every Avery card depends on `window.AveryCore` being present for shared
+// Served by the avery_has_os integration and auto-loaded on every Home Assistant
+// page. Every Avery card depends on `window.Avery` being present for shared
 // design tokens, helpers, and — critically — the ENTITLEMENT SEAM.
 //
 // Phase 1 is entirely free, so isUnlocked() always returns true. This is the
 // single swap point where the future licensed companion (Phase 2, only if the
 // ecosystem passes ~500 installs) will plug in real signed-key validation.
-// Cards MUST call AveryCore.isUnlocked(feature) rather than assuming access, so
+// Cards MUST call Avery.isUnlocked(feature) rather than assuming access, so
 // the paywall can be introduced later with zero card rewrites.
 
 (() => {
   const VERSION = '0.1.0';
 
   // Idempotent: HA may inject this script more than once across navigations.
-  if (window.AveryCore && window.AveryCore.version === VERSION) return;
+  if (window.Avery && window.Avery.version === VERSION) return;
 
-  const AveryCore = {
+  const Avery = {
     version: VERSION,
 
     // ---- Entitlement seam -------------------------------------------------
@@ -33,7 +33,7 @@
     async refreshEntitlements(hass) {
       try {
         const res = await hass.connection.sendMessagePromise({
-          type: 'avery_core/entitlements',
+          type: 'avery_has_os/entitlements',
         });
         this._freePhase = !!res.free_phase;
         return res;
@@ -44,6 +44,6 @@
     },
   };
 
-  window.AveryCore = AveryCore;
-  console.info(`[Avery Core] v${VERSION} runtime loaded`);
+  window.Avery = Avery;
+  console.info(`[Avery HAS OS] v${VERSION} runtime loaded`);
 })();

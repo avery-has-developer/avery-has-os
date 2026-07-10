@@ -1,6 +1,6 @@
-"""Avery Core version/health sensor.
+"""Avery HAS OS version/health sensor.
 
-Also the reason Avery Core is an integration rather than pure frontend
+Also the reason Avery HAS OS is an integration rather than pure frontend
 resources: an integration is counted in Home Assistant's public analytics,
 giving the ecosystem a real install signal.
 """
@@ -21,11 +21,11 @@ async def async_setup_entry(
     entry: ConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    async_add_entities([AveryCoreVersionSensor(entry)])
+    async_add_entities([AveryHasOsVersionSensor(entry)])
 
 
-class AveryCoreVersionSensor(SensorEntity):
-    """Reports the installed Avery Core version."""
+class AveryHasOsVersionSensor(SensorEntity):
+    """Reports the installed Avery HAS OS version."""
 
     _attr_has_entity_name = True
     _attr_name = "Version"
@@ -38,8 +38,8 @@ class AveryCoreVersionSensor(SensorEntity):
         self._attr_native_value = VERSION
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, entry.entry_id)},
-            name="Avery Core",
+            name="Avery HAS OS",
             manufacturer="Avery HAS OS",
-            model="Core",
+            model="Baseline",
             sw_version=VERSION,
         )
