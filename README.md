@@ -35,6 +35,9 @@ together. Install one thing, and your whole dashboard levels up.
   in your dashboards.
 - 🎨 **A real design system** — every card and theme shares the same look, spacing,
   and polish. Cohesive, not cobbled together.
+- 🧱 **Completely self-contained** — **no other cards or add-ons required.** No
+  card-mod, no custom CSS, no YAML. Every Avery card is fully configurable right
+  in the dashboard UI — colours, glow, radius, layout — with settings built in.
 - 🪶 **Light & private** — no cloud, no account, no tracking. It just runs.
 - 🔓 **Free forever core** — the baseline is open source and free. Always.
 
