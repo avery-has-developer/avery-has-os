@@ -26,3 +26,7 @@ jobs:
           # brands is only required for the HACS default store; we'll add the
           # home-assistant/brands entry at submission time.
           ignore: brands
+        env:
+          # Let HACS authenticate content fetches (needed while the repo is
+          # private; harmless once public).
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
