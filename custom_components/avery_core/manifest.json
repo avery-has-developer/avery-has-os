@@ -1,13 +1,13 @@
 {
   "domain": "avery_core",
   "name": "Avery Core",
-  "version": "0.1.0",
-  "documentation": "https://github.com/avery-has-developer/avery-core",
-  "issue_tracker": "https://github.com/avery-has-developer/avery-core/issues",
   "codeowners": ["@avery-has-developer"],
   "config_flow": true,
+  "dependencies": ["http", "frontend", "websocket_api"],
+  "documentation": "https://github.com/avery-has-developer/avery-core",
   "integration_type": "service",
   "iot_class": "local_push",
+  "issue_tracker": "https://github.com/avery-has-developer/avery-core/issues",
   "requirements": [],
-  "dependencies": ["http", "frontend", "websocket_api"]
+  "version": "0.1.0"
 }

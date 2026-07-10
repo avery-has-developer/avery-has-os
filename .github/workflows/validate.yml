@@ -23,3 +23,6 @@ jobs:
       - uses: hacs/action@main
         with:
           category: integration
+          # brands is only required for the HACS default store; we'll add the
+          # home-assistant/brands entry at submission time.
+          ignore: brands
