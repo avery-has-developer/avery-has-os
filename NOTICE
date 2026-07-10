@@ -1,0 +1,12 @@
+Avery Core
+Copyright 2026 Avery HAS OS (github.com/avery-has-developer)
+
+Licensed under the Apache License, Version 2.0 (the "License"); see the LICENSE
+file. You may obtain a copy of the License at
+http://www.apache.org/licenses/LICENSE-2.0
+
+---
+
+This product is built for Home Assistant (https://www.home-assistant.io/) and
+draws on patterns and integration interfaces from the Home Assistant project
+and its community, which is licensed under the Apache License 2.0. With thanks.
