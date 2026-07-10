@@ -1,17 +1,19 @@
 # Screenshots / images
 
-Drop the following images here (referenced by the main `README.md`). PNG or JPG.
+Drop these images here (referenced by the main `README.md`). PNG or JPG.
 
 | File | What it is | Suggested size |
 |------|------------|----------------|
-| `banner.png` | Wide hero banner — Avery HAS OS wordmark/logo on a clean background | ~1280×400 |
-| `dashboard.png` | A real Avery HAS OS dashboard showing the cards + theme in action | ~1280×800, retina-crisp |
+| `banner.png` | Wide hero banner — the Avery HAS OS wordmark/logo | ~1280×400 |
+| `dashboard.png` | Your best real Avery dashboard — the headline shot | ~1280×800 |
+| `free-suite.png` | A grid/montage showing the free cards + themes in use | ~1280×700 |
+| `premium-suite.png` | A grid teasing the premium cards | ~1280×700 |
 
-Tips for a professional, trustworthy look:
-- Use a real, populated dashboard — no placeholder/demo entities where avoidable.
-- Consistent theme (dark usually photographs best for LED/glass cards).
-- Crop tightly, avoid the browser chrome/sidebar unless it's part of the story.
-- Keep file sizes reasonable (< ~500 KB each) so the HACS page loads fast.
+Tips for a professional, trustworthy, salesy look:
+- Real, populated dashboards — no demo/placeholder entities.
+- Consistent theme (dark shows the glass look best).
+- Retina-crisp, tightly cropped, no browser chrome.
+- Keep each file < ~500 KB so the page loads fast.
 
-Add more as the ecosystem grows (e.g. `cards-grid.png`, per-card close-ups) and
-reference them from `README.md`.
+As the suite grows you can add per-card close-ups (e.g. `card-modern.png`,
+`card-jarvis.png`) and reference them from `README.md`.
