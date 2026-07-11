@@ -49,7 +49,7 @@ download. Rolling out card by card; the flagship Modern Card is live today.
 | 🎨 | **Themes** | *Avery*, *Avery Frosted Glass*, and *Avery Dark Glass* — the signature Avery look. | 🔜 Coming soon |
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/avery-has-developer/avery-has-os/main/images/tablet-1.png" alt="Avery HAS OS dashboards" width="100%">
+  <img src="https://raw.githubusercontent.com/avery-has-developer/avery-has-os/main/images/avery-screen-6.png" alt="Avery HAS OS — one install, every room" width="100%">
 </p>
 
 ## 🔑 Avery Premium — unlock the full suite
