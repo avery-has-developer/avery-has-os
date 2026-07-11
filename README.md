@@ -6,8 +6,8 @@
 <h1 align="center">Avery HAS OS</h1>
 
 <p align="center">
-  <strong>A designed smart-home suite for Home Assistant.<br>
-  One install — a whole dashboard experience that feels like one product.</strong>
+  <strong>The one-stop solution for functional, beautiful dashboards<br>
+  with the ultimate Wife Approval Rating — the <em>W.A.R. factor</em>. 💥</strong>
 </p>
 
 <p align="center">
@@ -26,18 +26,22 @@
 
 ## Why Avery HAS OS?
 
-Home Assistant is powerful, but its dashboards are a pile of parts. **Avery HAS OS
-is a single, designed suite** — cards and themes crafted to look like they belong
-together. Install one thing, and your whole dashboard levels up.
+Avery HAS OS is a **standard, scalable platform for building beautiful dashboards.**
+At its heart is the **Avery Modern Card** — a generic card system that can be
+customised to display *any* entity in your Home Assistant. Around it sits a suite of
+**20+ beautifully themed, animated cards and apps** that transform your dashboard
+into a genuinely functional, usable system.
 
-- 🎁 **One install, everything included** — no hunting for individual cards. Install
-  Avery HAS OS and the whole free suite of cards *and* themes is instantly ready
-  in your dashboards.
-- 🎨 **A real design system** — every card and theme shares the same look, spacing,
-  and polish. Cohesive, not cobbled together.
-- 🧱 **Completely self-contained** — **no other cards or add-ons required.** No
-  card-mod, no custom CSS, no YAML. Every Avery card is fully configurable right
-  in the dashboard UI — colours, glow, radius, layout — with settings built in.
+- ⛅ **Animated Weather** — realistic animations for sun, rain, and lightning.
+- 🕹️ **Pixel Clock** — an animated LED clock showing the time *and* your named timers.
+- 🤖 **Jarvis-II** turns a tablet into an intelligent voice assistant; the **Avery
+  Assist** card makes it smarter still, with Alexa Mode and wake-word integration.
+
+…and it all comes **from a single integration** — no tracking multiple updates, no
+modifying resources, no managing customisations by hand.
+
+- 🧱 **Completely self-contained** — no other cards or add-ons required. No card-mod,
+  no custom CSS, no YAML. Every card is fully configurable right in the dashboard UI.
 - 🪶 **Light & private** — no cloud, no account, no tracking. It just runs.
 - 🔓 **Free forever core** — the baseline is open source and free. Always.
 
