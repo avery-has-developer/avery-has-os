@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Avery OS — Stacked Launch</title>
+<meta name="description" content="Avery OS launch presentation — stacked dashboards." />
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { background:#05060f; }
+  .tag-chip { letter-spacing:.2em; }
+</style>
+</head>
+<body class="min-h-screen text-white antialiased">
+  <header class="mx-auto max-w-6xl px-6 pt-24 pb-16 text-center">
+    <div class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-xs font-medium tracking-widest uppercase text-blue-300">
+      <span class="h-1.5 w-1.5 rounded-full bg-blue-400"></span> Avery OS · Launch
+    </div>
+    <h1 class="mt-8 text-5xl md:text-7xl font-bold leading-[1.05] tracking-tight">
+      Dashboards with the<br/>
+      <span class="bg-gradient-to-r from-blue-300 via-fuchsia-300 to-rose-300 bg-clip-text text-transparent">ultimate W.A.R. factor.</span>
+    </h1>
+    <p class="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-white/60">
+      One stop solution for functional and beautiful home dashboards. Engineered for the <em class="not-italic text-white/90">Wife Approval Rating</em> that actually matters.
+    </p>
+    <div class="mt-10 flex flex-wrap justify-center gap-3 text-xs font-medium uppercase tracking-wide text-white/70">
+      <span class="rounded-full border border-white/10 bg-white/[0.03] px-4 py-2">Avery Modern Cards</span>
+      <span class="rounded-full border border-white/10 bg-white/[0.03] px-4 py-2">20+ Animated Cards</span>
+      <span class="rounded-full border border-white/10 bg-white/[0.03] px-4 py-2">JARVIS-II Voice</span>
+      <span class="rounded-full border border-white/10 bg-white/[0.03] px-4 py-2">Single Integration</span>
+    </div>
+  </header>
+
+  <main class="mx-auto max-w-7xl space-y-10 md:space-y-16 px-4 md:px-8 pb-32">
+    <!-- Slide template repeated -->
+    <script>
+      const S = [
+        { src:"tablet-1.png", tag:"Introducing", title:"The ultimate W.A.R. factor", blurb:"Avery Modern Cards — a cohesive design language across every surface." },
+        { src:"tablet-2.png", tag:"Rooms & Media", title:"Every room, one elegant surface", blurb:"Living room, kitchen, bedroom — swap contexts with a single tap." },
+        { src:"tablet-3.png", tag:"Apps & Calendar", title:"Family life, beautifully in view", blurb:"Animated weather, pixel clock with named timers, calendar at a glance." },
+        { src:"tablet-4.png", tag:"JARVIS-II · Avery Assist", title:"Your tablet, now an assistant", blurb:"Alexa Mode, wakeword integration, intelligent voice — built in." },
+      ];
+      document.currentScript.insertAdjacentHTML("afterend",
+        S.map((s,i)=>`
+          <figure class="group relative overflow-hidden rounded-3xl border border-white/10 shadow-[0_40px_120px_-20px_rgba(80,60,200,0.35)] transition-transform duration-500 hover:-translate-y-1">
+            <div class="pointer-events-none absolute top-6 left-6 z-10 flex items-center gap-3">
+              <span class="tag-chip rounded-full bg-black/50 px-3 py-1 font-mono text-xs uppercase text-white/70 backdrop-blur">0${i+1} / 04</span>
+              <span class="rounded-full bg-white/10 px-3 py-1 text-xs font-medium tracking-wide text-white/90 backdrop-blur">${s.tag}</span>
+            </div>
+            <div class="grid md:grid-cols-2 items-center gap-8 p-8 md:p-14 bg-gradient-to-br from-[#0b0d1c] to-[#05060f]">
+              <div>
+                <h2 class="text-3xl md:text-5xl font-semibold tracking-tight leading-tight">${s.title}</h2>
+                <p class="mt-4 text-white/60 max-w-md">${s.blurb}</p>
+              </div>
+              <img src="${s.src}" alt="${s.title}" loading="${i===0?'eager':'lazy'}" class="w-full block" />
+            </div>
+          </figure>`).join(""));
+    </script>
+  </main>
+
+  <footer class="border-t border-white/10 bg-black/40">
+    <div class="mx-auto max-w-4xl px-6 py-16 text-center">
+      <h2 class="text-3xl md:text-4xl font-bold tracking-tight">One integration. Zero customisation debt.</h2>
+      <p class="mx-auto mt-4 max-w-xl text-white/60">No tracking multiple updates. No juggling resources. Just a beautiful, scalable dashboard your whole family will love.</p>
+      <div class="mt-6 text-xs tracking-[0.3em] uppercase text-blue-300/80">Avery OS</div>
+    </div>
+  </footer>
+</body>
+</html>
