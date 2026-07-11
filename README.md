@@ -3,11 +3,8 @@
   <img src="images/banner.png" alt="Avery HAS OS" width="100%">
 </p>
 
-<h1 align="center">Avery HAS OS</h1>
-
 <p align="center">
-  <strong>The one-stop solution for functional, beautiful dashboards<br>
-  with the ultimate Wife Approval Rating — the <em>W.A.R. factor</em>. 💥</strong>
+  <a href="https://avery-has-developer.github.io/avery-has-os/"><strong>🌐 See the full experience →</strong></a>
 </p>
 
 <p align="center">
@@ -15,11 +12,6 @@
   <img src="https://img.shields.io/badge/Home%20Assistant-2024.4%2B-41BDF5.svg?style=for-the-badge&logo=home-assistant&logoColor=white" alt="Home Assistant 2024.4+">
   <img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg?style=for-the-badge" alt="License Apache 2.0">
   <a href="https://github.com/avery-has-developer/avery-has-os/actions/workflows/validate.yml"><img src="https://img.shields.io/github/actions/workflow/status/avery-has-developer/avery-has-os/validate.yml?style=for-the-badge&label=validation" alt="Validation"></a>
-</p>
-
-<!-- Hero screenshot: replace images/dashboard.png with your best Avery dashboard -->
-<p align="center">
-  <img src="images/dashboard.png" alt="An Avery HAS OS dashboard" width="100%">
 </p>
 
 ---
