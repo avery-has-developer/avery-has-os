@@ -39,18 +39,19 @@ modifying resources, no managing customisations by hand.
 
 ## ✨ Included — free with every install
 
-Install Avery HAS OS and these are immediately available in your **＋ Add Card**
-picker, plus the themes in your theme selector. Nothing else to download.
+The free baseline — one install brings the whole suite, with the themes in your
+theme selector and every card in your **＋ Add Card** picker. Nothing else to
+download. Rolling out card by card; the flagship Modern Card is live today.
 
-| | Card | What it does |
-|---|------|--------------|
-| 🧩 | **Modern Card** | The flagship — tile, status, and hero/room views in one, with climate, security, presence, and lights. |
-| 🕹️ | **Pixel Clock** | An LED-matrix clock with built-in named timers & alarms. |
-| ⛅ | **Weather** | A clean, designed weather card. |
-| ☰ | **Menu** | A sleek navigation menu for moving around your dashboards. |
-| 🏷️ | **Room Name** | A tidy room/section header to label areas of your home. |
-| ➖ | **Divider** | Elegant section dividers to structure your dashboards. |
-| 🎨 | **Themes** | *Avery*, *Avery Frosted Glass*, and *Avery Dark Glass* — the signature Avery look. |
+| | Card | What it does | Status |
+|---|------|--------------|--------|
+| 🧩 | **Modern Card** | The flagship — tile, status, and hero/room views in one, with climate, security, presence, and lights. | ✅ Available |
+| 🕹️ | **Pixel Clock** | An LED-matrix clock with built-in named timers & alarms. | 🔜 Coming soon |
+| ⛅ | **Weather** | A clean, designed weather card. | 🔜 Coming soon |
+| ☰ | **Menu** | A sleek navigation menu for moving around your dashboards. | 🔜 Coming soon |
+| 🏷️ | **Room Name** | A tidy room/section header to label areas of your home. | 🔜 Coming soon |
+| ➖ | **Divider** | Elegant section dividers to structure your dashboards. | 🔜 Coming soon |
+| 🎨 | **Themes** | *Avery*, *Avery Frosted Glass*, and *Avery Dark Glass* — the signature Avery look. | 🔜 Coming soon |
 
 <!-- Optional: images/free-suite.png — a grid showing the free cards + themes -->
 <p align="center">
@@ -64,31 +65,36 @@ paste it into Avery HAS OS, and they instantly appear as configurable cards in y
 dashboards — no extra installs, no fuss. No key, no clutter: you only ever see what
 you own.
 
-| | Card | What it does |
-|---|------|--------------|
-| 🤖 | **Jarvis** | A voice-assistant experience — a floating, always-there assistant for your home. |
-| 📅 | **Calendar** | A beautiful combined calendar across all your sources. |
-| 🖼️ | **Photo Frame** | Turn any dashboard into a rotating photo display. |
-| ✅ | **To-Do** | Designed task lists that actually look good. |
-| 🛒 | **Grocery** | A smart, aisle-aware shopping list. |
-| 🌡️ | **Nest** | A rich Nest thermostat & climate card. |
-| 📹 | **Blink + CCTV** | Live camera views and motion clips, beautifully presented. |
-| 🐾 | **Cat** | A playful pet-status card. |
-| ⏳ | **Countdown** | Count down to the moments that matter. |
-| 🎵 | **Music Player** | A gorgeous media player for your whole home. |
-| ♨️ | **Thermostat** | An advanced climate dial with fine control. |
-| 💡 | **Light Group** | Group and control your lights with style. |
-| 📺 | **LG TV** | Full control of your LG (webOS) television. |
-| 🔌 | **Appliances & Events** | Appliance status and household events at a glance. |
+Every premium card is **in active development** — not yet purchasable. This is the
+roadmap we're building toward; keys and unlocking arrive once the suite is ready.
+
+| | Card | What it does | Status |
+|---|------|--------------|--------|
+| 🤖 | **Jarvis-II** | A voice-assistant experience — a floating, always-there assistant for your home. | 🛠️ In development |
+| 🗣️ | **Avery Assist** | Alexa Mode + wake-word voice, making Jarvis smarter still. | 🛠️ In development |
+| 📅 | **Calendar** | A beautiful combined calendar across all your sources. | 🛠️ In development |
+| 🖼️ | **Photo Frame** | Turn any dashboard into a rotating photo display. | 🛠️ In development |
+| ✅ | **To-Do** | Designed task lists that actually look good. | 🛠️ In development |
+| 🛒 | **Grocery** | A smart, aisle-aware shopping list. | 🛠️ In development |
+| 🌡️ | **Nest** | A rich Nest thermostat & climate card. | 🛠️ In development |
+| 📹 | **Blink + CCTV** | Live camera views and motion clips, beautifully presented. | 🛠️ In development |
+| 🐾 | **Cat** | A playful pet-status card. | 🛠️ In development |
+| ⏳ | **Countdown** | Count down to the moments that matter. | 🛠️ In development |
+| 🎵 | **Music Player** | A gorgeous media player for your whole home. | 🛠️ In development |
+| ♨️ | **Thermostat** | An advanced climate dial with fine control. | 🛠️ In development |
+| 💡 | **Light Group** | Group and control your lights with style. | 🛠️ In development |
+| 📺 | **LG TV** | Full control of your LG (webOS) television. | 🛠️ In development |
+| 🔌 | **Appliances & Events** | Appliance status and household events at a glance. | 🛠️ In development |
 
 <!-- Optional: images/premium-suite.png — a grid teasing the premium cards -->
 <p align="center">
   <img src="https://raw.githubusercontent.com/avery-has-developer/avery-has-os/main/images/premium-suite.png" alt="The Avery Premium cards" width="100%">
 </p>
 
-> **How unlocking works:** premium cards are delivered only to key-holders. Enter a
-> valid key in Avery HAS OS and it fetches and enables them — they show up in the
-> add-card picker automatically. Everything you had free stays free.
+> **How unlocking will work:** premium cards will be delivered only to key-holders.
+> Enter a valid key in Avery HAS OS and it fetches and enables them — they show up in
+> the add-card picker automatically. Everything you had free stays free. *(Keys and
+> the premium suite are still in development — not yet available to purchase.)*
 
 ## Installation
 
@@ -102,10 +108,11 @@ you own.
 
 That's it — the free cards and themes are now ready in your dashboards.
 
-### Unlocking Premium
+### Unlocking Premium *(coming soon)*
 
-Open Avery HAS OS in **Settings → Devices & Services**, and paste your license key.
-The premium cards appear in the add-card picker within moments.
+Once the premium suite ships, you'll open Avery HAS OS in **Settings → Devices &
+Services**, paste your license key, and the premium cards appear in the add-card
+picker within moments. Premium keys aren't available to purchase yet.
 
 ## Roadmap & honesty
 
