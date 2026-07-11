@@ -1,8 +1,3 @@
-<!-- Banner: replace images/banner.png with a wide hero (≈1280×400) -->
-<p align="center">
-  <img src="https://raw.githubusercontent.com/avery-has-developer/avery-has-os/main/images/banner.png" alt="Avery HAS OS" width="100%">
-</p>
-
 <p align="center">
   <a href="https://avery-has-developer.github.io/avery-has-os/"><strong>🌐 See the full experience →</strong></a>
 </p>
@@ -53,9 +48,8 @@ download. Rolling out card by card; the flagship Modern Card is live today.
 | ➖ | **Divider** | Elegant section dividers to structure your dashboards. | 🔜 Coming soon |
 | 🎨 | **Themes** | *Avery*, *Avery Frosted Glass*, and *Avery Dark Glass* — the signature Avery look. | 🔜 Coming soon |
 
-<!-- Optional: images/free-suite.png — a grid showing the free cards + themes -->
 <p align="center">
-  <img src="https://raw.githubusercontent.com/avery-has-developer/avery-has-os/main/images/free-suite.png" alt="The free Avery cards and themes" width="100%">
+  <img src="https://raw.githubusercontent.com/avery-has-developer/avery-has-os/main/images/tablet-1.png" alt="Avery HAS OS dashboards" width="100%">
 </p>
 
 ## 🔑 Avery Premium — unlock the full suite
@@ -85,11 +79,6 @@ roadmap we're building toward; keys and unlocking arrive once the suite is ready
 | 💡 | **Light Group** | Group and control your lights with style. | 🛠️ In development |
 | 📺 | **LG TV** | Full control of your LG (webOS) television. | 🛠️ In development |
 | 🔌 | **Appliances & Events** | Appliance status and household events at a glance. | 🛠️ In development |
-
-<!-- Optional: images/premium-suite.png — a grid teasing the premium cards -->
-<p align="center">
-  <img src="https://raw.githubusercontent.com/avery-has-developer/avery-has-os/main/images/premium-suite.png" alt="The Avery Premium cards" width="100%">
-</p>
 
 > **How unlocking will work:** premium cards will be delivered only to key-holders.
 > Enter a valid key in Avery HAS OS and it fetches and enables them — they show up in
