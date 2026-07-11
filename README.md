@@ -1,6 +1,6 @@
 <!-- Banner: replace images/banner.png with a wide hero (≈1280×400) -->
 <p align="center">
-  <img src="images/banner.png" alt="Avery HAS OS" width="100%">
+  <img src="https://raw.githubusercontent.com/avery-has-developer/avery-has-os/main/images/banner.png" alt="Avery HAS OS" width="100%">
 </p>
 
 <p align="center">
@@ -54,7 +54,7 @@ picker, plus the themes in your theme selector. Nothing else to download.
 
 <!-- Optional: images/free-suite.png — a grid showing the free cards + themes -->
 <p align="center">
-  <img src="images/free-suite.png" alt="The free Avery cards and themes" width="100%">
+  <img src="https://raw.githubusercontent.com/avery-has-developer/avery-has-os/main/images/free-suite.png" alt="The free Avery cards and themes" width="100%">
 </p>
 
 ## 🔑 Avery Premium — unlock the full suite
@@ -83,7 +83,7 @@ you own.
 
 <!-- Optional: images/premium-suite.png — a grid teasing the premium cards -->
 <p align="center">
-  <img src="images/premium-suite.png" alt="The Avery Premium cards" width="100%">
+  <img src="https://raw.githubusercontent.com/avery-has-developer/avery-has-os/main/images/premium-suite.png" alt="The Avery Premium cards" width="100%">
 </p>
 
 > **How unlocking works:** premium cards are delivered only to key-holders. Enter a
