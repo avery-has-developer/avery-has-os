@@ -22,7 +22,7 @@ from homeassistant.components.http import StaticPathConfig
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
 
-from .const import DOMAIN, FRONTEND_SCRIPT, URL_BASE, VERSION
+from .const import CARDS, CARDS_URL_BASE, DOMAIN, FRONTEND_SCRIPT, URL_BASE, VERSION
 from .entitlements import entitlements_snapshot
 
 _LOGGER = logging.getLogger(__name__)
@@ -42,14 +42,29 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     hass.data.setdefault(DOMAIN, {})[entry.entry_id] = {"version": VERSION}
 
     if not _FRONTEND_REGISTERED:
-        script_path = str(Path(__file__).parent / "frontend")
+        frontend_dir = Path(__file__).parent / "frontend"
         await hass.http.async_register_static_paths(
-            [StaticPathConfig(URL_BASE, script_path, cache_headers=False)]
+            [
+                StaticPathConfig(URL_BASE, str(frontend_dir), cache_headers=False),
+                StaticPathConfig(
+                    CARDS_URL_BASE, str(frontend_dir / "cards"), cache_headers=False
+                ),
+            ]
         )
-        # Load the shared runtime on every frontend page (as an ES module).
-        frontend.add_extra_js_url(hass, f"{URL_BASE}/{FRONTEND_SCRIPT}")
+        # Load the shared runtime first, then every bundled free card — all as ES
+        # modules, on every frontend page. Each card self-registers into the
+        # ＋ Add Card picker, so a single install exposes the whole free suite
+        # with no manual resource management. The ?v= query busts the browser
+        # cache when the integration version changes.
+        frontend.add_extra_js_url(hass, f"{URL_BASE}/{FRONTEND_SCRIPT}?v={VERSION}")
+        for card in CARDS:
+            frontend.add_extra_js_url(hass, f"{CARDS_URL_BASE}/{card}?v={VERSION}")
         _FRONTEND_REGISTERED = True
-        _LOGGER.info("Avery HAS OS frontend runtime registered at %s", URL_BASE)
+        _LOGGER.info(
+            "Avery HAS OS frontend runtime + %d free cards registered at %s",
+            len(CARDS),
+            URL_BASE,
+        )
 
     if not _WS_REGISTERED:
         websocket_api.async_register_command(hass, ws_entitlements)
