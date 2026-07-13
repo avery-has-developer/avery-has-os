@@ -24,6 +24,7 @@ from homeassistant.core import HomeAssistant, callback
 
 from .const import CARDS, CARDS_URL_BASE, DOMAIN, FRONTEND_SCRIPT, URL_BASE, VERSION
 from .entitlements import entitlements_snapshot
+from .themes import async_register_themes
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -69,6 +70,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     if not _WS_REGISTERED:
         websocket_api.async_register_command(hass, ws_entitlements)
         _WS_REGISTERED = True
+
+    # Deliver the bundled Avery themes so a single install populates the theme
+    # selector too — no separate HACS theme repo, no configuration.yaml edit.
+    await async_register_themes(hass)
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     return True

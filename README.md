@@ -34,19 +34,18 @@ modifying resources, no managing customisations by hand.
 
 ## ✨ Included — free with every install
 
-The free baseline — one install brings the whole suite, with the themes in your
-theme selector and every card in your **＋ Add Card** picker. Nothing else to
-download. Rolling out card by card; the flagship Modern Card is live today.
+The free baseline — **one install brings the whole suite**: every card lands in
+your **＋ Add Card** picker and the themes appear in your theme selector, with
+nothing else to download.
 
 | | Card | What it does | Status |
 |---|------|--------------|--------|
-| 🧩 | **Modern Card** | The flagship — tile, status, and hero/room views in one, with climate, security, presence, and lights. | ✅ Available |
-| 🕹️ | **Pixel Clock** | An LED-matrix clock with built-in named timers & alarms. | 🔜 Coming soon |
-| ⛅ | **Weather** | A clean, designed weather card. | 🔜 Coming soon |
-| ☰ | **Menu** | A sleek navigation menu for moving around your dashboards. | 🔜 Coming soon |
-| 🏷️ | **Room Name** | A tidy room/section header to label areas of your home. | 🔜 Coming soon |
-| ➖ | **Divider** | Elegant section dividers to structure your dashboards. | 🔜 Coming soon |
-| 🎨 | **Themes** | *Avery*, *Avery Frosted Glass*, and *Avery Dark Glass* — the signature Avery look. | 🔜 Coming soon |
+| 🧩 | **Modern Card** | The flagship — tile, status, and hero/room views in one, with climate, security, presence, lights, and built-in room headers. | ✅ Available |
+| 🕹️ | **Pixel Clock** | An LED-matrix clock with built-in named timers & alarms. | ✅ Available |
+| ⛅ | **Weather** | A clean, designed weather card. | ✅ Available |
+| ☰ | **Menu** | A sleek navigation menu for moving around your dashboards. | ✅ Available |
+| ➖ | **Divider** | Elegant section dividers to structure your dashboards. | ✅ Available |
+| 🎨 | **Themes** | *Avery*, *Avery Frosted Glass*, *Avery Dark Glass* and more — the signature Avery look. | ✅ Available |
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/avery-has-developer/avery-has-os/main/images/avery-screen-6.png" alt="Avery HAS OS — one install, every room" width="100%">

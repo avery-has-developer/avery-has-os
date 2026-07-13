@@ -1,0 +1,591 @@
+Avery:
+  modes:
+    dark:
+      dummy_variable1: '1'
+
+  # ── Fonts ────────────────────────────────────────────────────────────────
+  primary-font-family: 'Raleway, sans-serif'
+  ha-font-family-heading: 'var(--primary-font-family)'
+  ha-font-family-body: 'var(--primary-font-family)'
+  ha-font-family-code: 'Raleway, sans-serif'
+  ha-font-family-longform: 'Raleway, sans-serif'
+  ha-card-header-font-family: 'var(--primary-font-family)'
+
+  # ── Palette ──────────────────────────────────────────────────────────────
+  # Backgrounds
+  background-color: '#151c2c'
+  primary-background-color: 'var(--background-color)'
+  secondary-background-color: '#1c2438'
+  background-color-2: '#111827'
+
+  # Cards
+  ha-card-background: 'rgba(28, 36, 54, 0.98)'
+  card-background-color: 'var(--ha-card-background)'
+  paper-card-background-color: 'var(--ha-card-background)'
+  ha-card-box-shadow: '0 4px 24px rgba(21, 28, 44, 0.9)'
+  ha-card-border-radius: '12px'
+  border-radius: '12px'
+  ha-card-border-color: 'rgba(255, 255, 255, 0.05)'
+  ha-card-border-width: '1px'
+  ha-card-header-color: 'var(--primary-text-color)'
+  # New HA design system surface tokens
+  ha-color-surface-default: 'var(--ha-card-background)'
+  ha-color-on-surface-default: 'var(--primary-text-color)'
+
+  # Accent
+  accent-color: '#5B9CF6'
+  primary-color: 'var(--accent-color)'
+  dark-primary-color: 'var(--accent-color)'
+  accent-medium-color: 'var(--accent-color)'
+  clear-background-color: 'var(--accent-color)'
+
+  # RGB for bubble card glow etc.
+  rgb-state-default-color: '91, 156, 246'
+  rgb-accent-color: 'var(--rgb-state-default-color)'
+
+  # ── Text ─────────────────────────────────────────────────────────────────
+  text-color: '#E2E8F0'
+  primary-text-color: 'var(--text-color)'
+  text-primary-color: 'var(--text-color)'
+  secondary-text-color: '#94A3B8'
+  text-medium-light-color: '#64748B'
+  text-medium-color: '#475569'
+  disabled-text-color: '#334155'
+  text-light-primary-color: 'var(--text-color)'
+  # New HA design system text tokens
+  ha-color-text-primary: 'var(--primary-text-color)'
+  ha-color-text-secondary: 'var(--secondary-text-color)'
+  ha-color-text-disabled: 'var(--disabled-text-color)'
+
+  # ── Dividers ─────────────────────────────────────────────────────────────
+  divider-color: 'rgba(255, 255, 255, 0.35)'
+
+  # ── App Header ───────────────────────────────────────────────────────────
+  app-header-background-color: '#111827'
+  header-height: '48px'
+
+  # ── Sidebar ──────────────────────────────────────────────────────────────
+  sidebar-background-color: '#111827'
+  sidebar-icon-color: '#64748B'
+  sidebar-selected-icon-color: 'var(--accent-color)'
+  sidebar-selected-text-color: 'var(--text-color)'
+  paper-listbox-background-color: 'var(--sidebar-background-color)'
+
+  # ── Icons ────────────────────────────────────────────────────────────────
+  paper-item-icon-color: '#CBD5E1'
+  paper-item-icon-active-color: 'var(--accent-color)'
+  paper-item-selected_-_background-color: 'var(--background-color)'
+  state-icon-color: 'var(--secondary-text-color)'
+  state-active-color: 'var(--accent-color)'
+
+  # ── State colours ────────────────────────────────────────────────────────
+  state-red-color: '#F87171'
+  state-green-color: '#34D399'
+  state-orange-color: '#FBBF24'
+  state-alarm_control_panel-armed_away-color: 'var(--state-green-color)'
+  state-alarm_control_panel-armed_home-color: 'var(--state-green-color)'
+  state-alarm_control_panel-armed_night-color: 'var(--state-green-color)'
+  state-alarm_control_panel-arming-color: 'var(--state-orange-color)'
+  state-alarm_control_panel-triggered-color: 'var(--state-red-color)'
+  state-binary_sensor-active-color: 'var(--accent-color)'
+  state-binary_sensor-battery-on-color: 'var(--state-red-color)'
+  state-binary_sensor-moisture-on-color: 'var(--state-red-color)'
+  state-binary_sensor-smoke-on-color: 'var(--state-red-color)'
+  state-climate-heat-color: 'var(--state-orange-color)'
+  state-light-active-color: 'var(--accent-color)'
+  state-switch-active-color: 'var(--accent-color)'
+  state-media_player-active-color: 'var(--accent-color)'
+  state-person-home-color: 'var(--state-green-color)'
+  state-sensor-battery-low-color: 'var(--state-red-color)'
+  state-sensor-battery-medium-color: 'var(--state-orange-color)'
+
+  # ── Inputs & Forms ───────────────────────────────────────────────────────
+  mdc-checkbox-unchecked-color: 'var(--secondary-text-color)'
+  mdc-checkbox-disable-color: 'var(--disabled-text-color)'
+  mdc-text-field-fill-color: 'rgba(0, 0, 0, 0)'
+  mdc-text-field-ink-color: 'var(--text-color)'
+  mdc-select-fill-color: 'var(--secondary-background-color)'
+  mdc-select-ink-color: 'var(--primary-text-color)'
+  mdc-select-label-ink-color: 'var(--secondary-text-color)'
+  mdc-select-idle-line-color: 'var(--secondary-text-color)'
+  mdc-select-dropdown-icon-color: 'var(--secondary-text-color)'
+  mdc-select-hover-line-color: 'var(--accent-color)'
+  mdc-text-field-label-ink-color: 'var(--secondary-text-color)'
+  input-fill-color: 'rgba(0, 0, 0, 0)'
+  input-ink-color: 'var(--primary-text-color)'
+  input-label-ink-color: 'var(--secondary-text-color)'
+  input-idle-line-color: 'var(--secondary-text-color)'
+  input-hover-line-color: 'var(--primary-text-color)'
+  input-disabled-fill-color: 'rgba(0, 0, 0, 0)'
+  input-disabled-ink-color: 'var(--secondary-text-color)'
+  input-disabled-label-ink-color: 'var(--disabled-text-color)'
+  input-disabled-line-color: 'var(--disabled-text-color)'
+  input-dropdown-icon-color: 'var(--primary-text-color)'
+  input-outlined-idle-border-color: 'var(--disabled-text-color)'
+  input-outlined-hover-border-color: 'var(--disabled-text-color)'
+  input-outlined-disabled-border-color: 'var(--disabled-text-color)'
+  ha-color-fill-primary-normal-resting: 'var(--secondary-background-color)'
+  ha-color-fill-primary-normal-hover: 'var(--background-color)'
+  ha-color-fill-neutral-quiet-resting: 'var(--card-background-color)'
+  ha-color-fill-neutral-quiet-hover: 'rgba(255, 255, 255, 0.05)'
+  ha-color-fill-primary-quiet-resting: 'var(--background-color)'
+  ha-color-fill-primary-quiet-hover: 'rgba(255, 255, 255, 0.03)'
+  ha-color-form-background: 'var(--background-color)'
+  ha-color-form-background-hover: 'var(--ha-card-background)'
+  ha-color-form-background-disabled: 'rgba(255, 255, 255, 0.02)'
+  # New HA design system border tokens (for outlined inputs and surfaces)
+  ha-color-border-neutral-quiet: 'var(--disabled-text-color)'
+  ha-color-border-neutral-normal: 'var(--text-medium-light-color)'
+
+  # ── Toggles & Sliders ────────────────────────────────────────────────────
+  paper-toggle-button-checked-bar-color: 'var(--accent-color)'
+  paper-toggle-button-checked-ink-color: 'var(--accent-color)'
+  paper-toggle-button-unchecked-button-color: 'var(--disabled-text-color)'
+  paper-toggle-button-unchecked-bar-color: 'var(--disabled-text-color)'
+  mdc-theme-primary: 'var(--accent-color)'
+  switch-checked-button-color: 'var(--accent-color)'
+  switch-unchecked-color: '#334155'
+  switch-unchecked-track-color: 'var(--background-color-2)'
+  switch-checked-track-color: 'var(--background-color-2)'
+  paper-radio-button-checked-color: 'var(--accent-color)'
+  paper-slider-knob-color: 'var(--accent-color)'
+  paper-slider-active-color: 'var(--accent-color)'
+  paper-slider-container-color: 'var(--background-color-2)'
+  paper-slider-secondary-color: 'var(--secondary-background-color)'
+
+  # ── Dialogs & Popups ─────────────────────────────────────────────────────
+  ha-dialog-border-radius: '16px'
+  paper-dialog-background-color: '#1c2438'
+  ha-dialog-scrim-backdrop-filter: 'blur(8px)'
+  ha-dialog-surface-background: 'rgba(28, 36, 54, 0.92)'
+  mdc-dialog-scrim-color: 'rgba(0, 0, 0, 0.7)'
+  more-info-header-background: 'var(--secondary-background-color)'
+  popup-border-radius: '12px'
+
+  # ── Tables ───────────────────────────────────────────────────────────────
+  table-row-background-color: 'var(--background-color)'
+  table-row-alternative-background-color: 'var(--ha-card-background)'
+
+  # ── Badges ───────────────────────────────────────────────────────────────
+  label-badge-background-color: 'var(--secondary-background-color)'
+  label-badge-text-color: 'var(--text-color)'
+  label-badge-red: 'rgba(248, 113, 113, 0.2)'
+  label-badge-blue: 'rgba(91, 156, 246, 0.2)'
+  label-badge-green: 'rgba(52, 211, 153, 0.2)'
+  label-badge-yellow: 'rgba(251, 191, 36, 0.2)'
+
+  # ── Mini Media Player ────────────────────────────────────────────────────
+  mini-media-player-base-color: 'var(--text-color)'
+  mini-media-player-accent-color: 'var(--accent-color)'
+  mini-media-player-button-color: 'var(--ha-card-background)'
+
+  # ── Code Editor ──────────────────────────────────────────────────────────
+  code-editor-background-color: 'var(--background-color-2)'
+
+  # ── Glass component tokens (solid fallbacks for non-glass themes) ─────────
+  # These match avery_glass.yaml token names so av-btn/av-chip/av-dropdown
+  # work on all Avery themes. Glass themes override these with blurred values.
+  glass-white: 'rgba(255, 255, 255, 0.07)'
+  glass-white-md: 'rgba(255, 255, 255, 0.12)'
+  glass-white-lg: 'rgba(255, 255, 255, 0.20)'
+  glass-border: 'rgba(255, 255, 255, 0.13)'
+  glass-border-subtle: 'rgba(255, 255, 255, 0.07)'
+  glass-border-bright: 'rgba(255, 255, 255, 0.28)'
+  reflection-top: 'none'
+  reflection-inner: 'inset 0 1px 0 rgba(255, 255, 255, 0.08)'
+  shadow-glass: '0 4px 16px rgba(0, 0, 0, 0.35)'
+  av-dropdown-bg: 'rgba(22, 28, 48, 0.97)'
+  av-card-blur: 'none'
+
+  # ── Lovelace layout ──────────────────────────────────────────────────────
+  lovelace-horizontal-padding: '10px'
+  vertical-stack-card-gap: '8px'
+  stack-card-gap: '8px'
+
+  # ── View padding override ─────────────────────────────────────────────────
+  card-mod-theme: Avery
+  card-mod-view-yaml: |
+    hui-sections-view:
+      $: |
+        :host {
+          background: transparent !important;
+          background-image: none !important;
+        }
+        .wrapper {
+          margin-left: 8px !important;
+          margin-right: 8px !important;
+          padding-left: 0px !important;
+          padding-right: 0px !important;
+        }
+
+Avery Light:
+  modes:
+    light:
+      dummy_variable1: '1'
+
+  # ── Fonts ────────────────────────────────────────────────────────────────
+  primary-font-family: 'Raleway, sans-serif'
+  ha-font-family-heading: 'var(--primary-font-family)'
+  ha-font-family-body: 'var(--primary-font-family)'
+  ha-font-family-code: 'Raleway, sans-serif'
+  ha-font-family-longform: 'Raleway, sans-serif'
+  ha-card-header-font-family: 'var(--primary-font-family)'
+
+  # ── Palette ──────────────────────────────────────────────────────────────
+  # Backgrounds
+  background-color: '#F6F8FC'
+  primary-background-color: 'var(--background-color)'
+  secondary-background-color: '#EEF2F8'
+  background-color-2: '#E5EAF3'
+
+  # Cards
+  ha-card-background: 'rgba(255, 255, 255, 0.96)'
+  card-background-color: 'var(--ha-card-background)'
+  paper-card-background-color: 'var(--ha-card-background)'
+  ha-card-box-shadow: '0 4px 22px rgba(70, 84, 112, 0.12)'
+  ha-card-border-radius: '12px'
+  border-radius: '12px'
+  ha-card-border-color: 'rgba(70, 84, 112, 0.16)'
+  ha-card-border-width: '1px'
+  ha-card-header-color: 'var(--primary-text-color)'
+  ha-color-surface-default: 'var(--ha-card-background)'
+  ha-color-on-surface-default: 'var(--primary-text-color)'
+
+  # Accent
+  accent-color: '#3B82F6'
+  primary-color: 'var(--accent-color)'
+  dark-primary-color: 'var(--accent-color)'
+  accent-medium-color: 'var(--accent-color)'
+  clear-background-color: 'var(--accent-color)'
+
+  # RGB for bubble card glow etc.
+  rgb-state-default-color: '59, 130, 246'
+  rgb-accent-color: 'var(--rgb-state-default-color)'
+
+  # ── Text ─────────────────────────────────────────────────────────────────
+  text-color: '#172033'
+  primary-text-color: 'var(--text-color)'
+  text-primary-color: 'var(--text-color)'
+  secondary-text-color: '#5F6E86'
+  text-medium-light-color: '#7B8798'
+  text-medium-color: '#475569'
+  disabled-text-color: '#A8B2C1'
+  text-light-primary-color: 'var(--text-color)'
+  ha-color-text-primary: 'var(--primary-text-color)'
+  ha-color-text-secondary: 'var(--secondary-text-color)'
+  ha-color-text-disabled: 'var(--disabled-text-color)'
+
+  # ── Dividers ─────────────────────────────────────────────────────────────
+  divider-color: 'rgba(70, 84, 112, 0.22)'
+
+  # ── App Header ───────────────────────────────────────────────────────────
+  app-header-background-color: '#FFFFFF'
+  header-height: '48px'
+
+  # ── Sidebar ──────────────────────────────────────────────────────────────
+  sidebar-background-color: '#FFFFFF'
+  sidebar-icon-color: '#7B8798'
+  sidebar-selected-icon-color: 'var(--accent-color)'
+  sidebar-selected-text-color: 'var(--text-color)'
+  paper-listbox-background-color: 'var(--sidebar-background-color)'
+
+  # ── Icons ────────────────────────────────────────────────────────────────
+  paper-item-icon-color: '#536277'
+  paper-item-icon-active-color: 'var(--accent-color)'
+  paper-item-selected_-_background-color: 'var(--secondary-background-color)'
+  state-icon-color: 'var(--secondary-text-color)'
+  state-active-color: 'var(--accent-color)'
+
+  # ── State colours ────────────────────────────────────────────────────────
+  state-red-color: '#EF4444'
+  state-green-color: '#10B981'
+  state-orange-color: '#F59E0B'
+  state-alarm_control_panel-armed_away-color: 'var(--state-green-color)'
+  state-alarm_control_panel-armed_home-color: 'var(--state-green-color)'
+  state-alarm_control_panel-armed_night-color: 'var(--state-green-color)'
+  state-alarm_control_panel-arming-color: 'var(--state-orange-color)'
+  state-alarm_control_panel-triggered-color: 'var(--state-red-color)'
+  state-binary_sensor-active-color: 'var(--accent-color)'
+  state-binary_sensor-battery-on-color: 'var(--state-red-color)'
+  state-binary_sensor-moisture-on-color: 'var(--state-red-color)'
+  state-binary_sensor-smoke-on-color: 'var(--state-red-color)'
+  state-climate-heat-color: 'var(--state-orange-color)'
+  state-light-active-color: 'var(--accent-color)'
+  state-switch-active-color: 'var(--accent-color)'
+  state-media_player-active-color: 'var(--accent-color)'
+  state-person-home-color: 'var(--state-green-color)'
+  state-sensor-battery-low-color: 'var(--state-red-color)'
+  state-sensor-battery-medium-color: 'var(--state-orange-color)'
+
+  # ── Inputs & Forms ───────────────────────────────────────────────────────
+  mdc-checkbox-unchecked-color: 'var(--secondary-text-color)'
+  mdc-checkbox-disable-color: 'var(--disabled-text-color)'
+  mdc-text-field-fill-color: 'rgba(255, 255, 255, 0)'
+  mdc-text-field-ink-color: 'var(--text-color)'
+  mdc-select-fill-color: 'var(--secondary-background-color)'
+  mdc-select-ink-color: 'var(--primary-text-color)'
+  mdc-select-label-ink-color: 'var(--secondary-text-color)'
+  mdc-select-idle-line-color: 'var(--secondary-text-color)'
+  mdc-select-dropdown-icon-color: 'var(--secondary-text-color)'
+  mdc-select-hover-line-color: 'var(--accent-color)'
+  mdc-text-field-label-ink-color: 'var(--secondary-text-color)'
+  input-fill-color: 'rgba(255, 255, 255, 0)'
+  input-ink-color: 'var(--primary-text-color)'
+  input-label-ink-color: 'var(--secondary-text-color)'
+  input-idle-line-color: 'var(--secondary-text-color)'
+  input-hover-line-color: 'var(--primary-text-color)'
+  input-disabled-fill-color: 'rgba(255, 255, 255, 0)'
+  input-disabled-ink-color: 'var(--secondary-text-color)'
+  input-disabled-label-ink-color: 'var(--disabled-text-color)'
+  input-disabled-line-color: 'var(--disabled-text-color)'
+  input-dropdown-icon-color: 'var(--primary-text-color)'
+  input-outlined-idle-border-color: 'var(--disabled-text-color)'
+  input-outlined-hover-border-color: 'var(--text-medium-light-color)'
+  input-outlined-disabled-border-color: 'var(--disabled-text-color)'
+  ha-color-fill-primary-normal-resting: 'var(--secondary-background-color)'
+  ha-color-fill-primary-normal-hover: 'var(--background-color-2)'
+  ha-color-fill-neutral-quiet-resting: 'var(--card-background-color)'
+  ha-color-fill-neutral-quiet-hover: 'rgba(70, 84, 112, 0.06)'
+  ha-color-fill-primary-quiet-resting: 'var(--secondary-background-color)'
+  ha-color-fill-primary-quiet-hover: 'rgba(59, 130, 246, 0.08)'
+  ha-color-form-background: 'var(--ha-card-background)'
+  ha-color-form-background-hover: '#FFFFFF'
+  ha-color-form-background-disabled: 'rgba(70, 84, 112, 0.04)'
+  ha-color-border-neutral-quiet: 'var(--disabled-text-color)'
+  ha-color-border-neutral-normal: 'var(--text-medium-light-color)'
+
+  # ── Toggles & Sliders ────────────────────────────────────────────────────
+  paper-toggle-button-checked-bar-color: 'var(--accent-color)'
+  paper-toggle-button-checked-ink-color: 'var(--accent-color)'
+  paper-toggle-button-unchecked-button-color: 'var(--disabled-text-color)'
+  paper-toggle-button-unchecked-bar-color: 'var(--disabled-text-color)'
+  mdc-theme-primary: 'var(--accent-color)'
+  switch-checked-button-color: 'var(--accent-color)'
+  switch-unchecked-color: '#A8B2C1'
+  switch-unchecked-track-color: 'var(--background-color-2)'
+  switch-checked-track-color: 'var(--background-color-2)'
+  paper-radio-button-checked-color: 'var(--accent-color)'
+  paper-slider-knob-color: 'var(--accent-color)'
+  paper-slider-active-color: 'var(--accent-color)'
+  paper-slider-container-color: 'var(--background-color-2)'
+  paper-slider-secondary-color: 'var(--secondary-background-color)'
+
+  # ── Dialogs & Popups ─────────────────────────────────────────────────────
+  ha-dialog-border-radius: '16px'
+  paper-dialog-background-color: '#FFFFFF'
+  ha-dialog-scrim-backdrop-filter: 'blur(8px)'
+  ha-dialog-surface-background: 'rgba(255, 255, 255, 0.96)'
+  mdc-dialog-scrim-color: 'rgba(17, 24, 39, 0.35)'
+  more-info-header-background: 'var(--secondary-background-color)'
+  popup-border-radius: '12px'
+
+  # ── Tables ───────────────────────────────────────────────────────────────
+  table-row-background-color: 'var(--ha-card-background)'
+  table-row-alternative-background-color: 'var(--secondary-background-color)'
+
+  # ── Badges ───────────────────────────────────────────────────────────────
+  label-badge-background-color: 'var(--secondary-background-color)'
+  label-badge-text-color: 'var(--text-color)'
+  label-badge-red: 'rgba(239, 68, 68, 0.14)'
+  label-badge-blue: 'rgba(59, 130, 246, 0.14)'
+  label-badge-green: 'rgba(16, 185, 129, 0.14)'
+  label-badge-yellow: 'rgba(245, 158, 11, 0.16)'
+
+  # ── Mini Media Player ────────────────────────────────────────────────────
+  mini-media-player-base-color: 'var(--text-color)'
+  mini-media-player-accent-color: 'var(--accent-color)'
+  mini-media-player-button-color: 'var(--ha-card-background)'
+
+  # ── Code Editor ──────────────────────────────────────────────────────────
+  code-editor-background-color: 'var(--secondary-background-color)'
+
+  # ── Lovelace layout ──────────────────────────────────────────────────────
+  lovelace-horizontal-padding: '10px'
+  vertical-stack-card-gap: '8px'
+  stack-card-gap: '8px'
+
+  # ── View padding override ─────────────────────────────────────────────────
+  card-mod-theme: Avery Light
+  card-mod-view-yaml: |
+    hui-sections-view:
+      $: |
+        :host {
+          background: transparent !important;
+          background-image: none !important;
+        }
+        .wrapper {
+          margin-left: 8px !important;
+          margin-right: 8px !important;
+          padding-left: 0px !important;
+          padding-right: 0px !important;
+        }
+
+Avery Modern:
+  modes:
+    dark:
+      dummy_variable1: '1'
+  primary-font-family: Raleway, sans-serif
+  ha-font-family-heading: var(--primary-font-family)
+  ha-font-family-body: var(--primary-font-family)
+  ha-font-family-code: Raleway, sans-serif
+  ha-font-family-longform: Raleway, sans-serif
+  ha-card-header-font-family: var(--primary-font-family)
+  background-color: '#282828'
+  primary-background-color: '#282828'
+  secondary-background-color: '#363636'
+  background-color-2: '#202022'
+  ha-card-background: rgba(255,255,255,0.10)
+  card-background-color: rgba(255,255,255,0.10)
+  paper-card-background-color: rgba(255,255,255,0.10)
+  ha-card-box-shadow: none
+  ha-card-border-color: transparent
+  ha-card-border-width: 0px
+  ha-card-header-color: var(--primary-text-color)
+  ha-color-surface-default: var(--ha-card-background)
+  ha-color-on-surface-default: var(--primary-text-color)
+  accent-color: '#5B9CF6'
+  primary-color: var(--accent-color)
+  dark-primary-color: var(--accent-color)
+  accent-medium-color: var(--accent-color)
+  clear-background-color: var(--accent-color)
+  rgb-state-default-color: 91, 156, 246
+  rgb-accent-color: var(--rgb-state-default-color)
+  text-color: '#ffffff'
+  primary-text-color: '#ffffff'
+  text-primary-color: '#ffffff'
+  secondary-text-color: '#d3d3d3'
+  text-medium-light-color: '#64748B'
+  text-medium-color: '#475569'
+  disabled-text-color: rgba(255,255,255,0.34)
+  text-light-primary-color: var(--text-color)
+  ha-color-text-primary: var(--primary-text-color)
+  ha-color-text-secondary: var(--secondary-text-color)
+  ha-color-text-disabled: var(--disabled-text-color)
+  divider-color: rgba(255,255,255,0.32)
+  app-header-background-color: '#2c2c2e'
+  header-height: 48px
+  sidebar-background-color: '#2c2c2e'
+  sidebar-icon-color: '#64748B'
+  sidebar-selected-icon-color: '#ffffff'
+  sidebar-selected-text-color: '#ffffff'
+  paper-listbox-background-color: var(--sidebar-background-color)
+  paper-item-icon-color: '#CBD5E1'
+  paper-item-icon-active-color: '#ffffff'
+  paper-item-selected_-_background-color: var(--background-color)
+  state-icon-color: rgba(255,255,255,0.86)
+  state-active-color: '#ffffff'
+  state-red-color: '#F87171'
+  state-green-color: '#34D399'
+  state-orange-color: '#FBBF24'
+  state-alarm_control_panel-armed_away-color: var(--state-green-color)
+  state-alarm_control_panel-armed_home-color: var(--state-green-color)
+  state-alarm_control_panel-armed_night-color: var(--state-green-color)
+  state-alarm_control_panel-arming-color: var(--state-orange-color)
+  state-alarm_control_panel-triggered-color: var(--state-red-color)
+  state-binary_sensor-active-color: var(--accent-color)
+  state-binary_sensor-battery-on-color: var(--state-red-color)
+  state-binary_sensor-moisture-on-color: var(--state-red-color)
+  state-binary_sensor-smoke-on-color: var(--state-red-color)
+  state-climate-heat-color: var(--state-orange-color)
+  state-light-active-color: var(--accent-color)
+  state-switch-active-color: var(--accent-color)
+  state-media_player-active-color: var(--accent-color)
+  state-person-home-color: var(--state-green-color)
+  state-sensor-battery-low-color: var(--state-red-color)
+  state-sensor-battery-medium-color: var(--state-orange-color)
+  mdc-checkbox-unchecked-color: var(--secondary-text-color)
+  mdc-checkbox-disable-color: var(--disabled-text-color)
+  mdc-text-field-fill-color: rgba(0, 0, 0, 0)
+  mdc-text-field-ink-color: var(--text-color)
+  mdc-select-fill-color: var(--secondary-background-color)
+  mdc-select-ink-color: var(--primary-text-color)
+  mdc-select-label-ink-color: var(--secondary-text-color)
+  mdc-select-idle-line-color: var(--secondary-text-color)
+  mdc-select-dropdown-icon-color: var(--secondary-text-color)
+  mdc-select-hover-line-color: var(--accent-color)
+  mdc-text-field-label-ink-color: var(--secondary-text-color)
+  input-fill-color: rgba(0, 0, 0, 0)
+  input-ink-color: var(--primary-text-color)
+  input-label-ink-color: var(--secondary-text-color)
+  input-idle-line-color: var(--secondary-text-color)
+  input-hover-line-color: var(--primary-text-color)
+  input-disabled-fill-color: rgba(0, 0, 0, 0)
+  input-disabled-ink-color: var(--secondary-text-color)
+  input-disabled-label-ink-color: var(--disabled-text-color)
+  input-disabled-line-color: var(--disabled-text-color)
+  input-dropdown-icon-color: var(--primary-text-color)
+  input-outlined-idle-border-color: var(--disabled-text-color)
+  input-outlined-hover-border-color: var(--disabled-text-color)
+  input-outlined-disabled-border-color: var(--disabled-text-color)
+  ha-color-fill-primary-normal-resting: var(--secondary-background-color)
+  ha-color-fill-primary-normal-hover: var(--background-color)
+  ha-color-fill-neutral-quiet-resting: var(--card-background-color)
+  ha-color-fill-neutral-quiet-hover: rgba(255, 255, 255, 0.05)
+  ha-color-fill-primary-quiet-resting: var(--background-color)
+  ha-color-fill-primary-quiet-hover: rgba(255, 255, 255, 0.03)
+  ha-color-form-background: var(--background-color)
+  ha-color-form-background-hover: var(--ha-card-background)
+  ha-color-form-background-disabled: rgba(255, 255, 255, 0.02)
+  ha-color-border-neutral-quiet: var(--disabled-text-color)
+  ha-color-border-neutral-normal: var(--text-medium-light-color)
+  paper-toggle-button-checked-bar-color: var(--accent-color)
+  paper-toggle-button-checked-ink-color: var(--accent-color)
+  paper-toggle-button-unchecked-button-color: var(--disabled-text-color)
+  paper-toggle-button-unchecked-bar-color: var(--disabled-text-color)
+  mdc-theme-primary: var(--accent-color)
+  switch-checked-button-color: var(--accent-color)
+  switch-unchecked-color: '#334155'
+  switch-unchecked-track-color: var(--background-color-2)
+  switch-checked-track-color: var(--background-color-2)
+  paper-radio-button-checked-color: var(--accent-color)
+  paper-slider-knob-color: var(--accent-color)
+  paper-slider-active-color: var(--accent-color)
+  paper-slider-container-color: var(--background-color-2)
+  paper-slider-secondary-color: var(--secondary-background-color)
+  ha-dialog-border-radius: 16px
+  paper-dialog-background-color: '#1c2438'
+  ha-dialog-scrim-backdrop-filter: blur(8px)
+  ha-dialog-surface-background: rgba(28, 36, 54, 0.92)
+  mdc-dialog-scrim-color: rgba(0, 0, 0, 0.7)
+  more-info-header-background: var(--secondary-background-color)
+  popup-border-radius: 12px
+  table-row-background-color: var(--background-color)
+  table-row-alternative-background-color: var(--ha-card-background)
+  label-badge-background-color: var(--secondary-background-color)
+  label-badge-text-color: var(--text-color)
+  label-badge-red: rgba(248, 113, 113, 0.2)
+  label-badge-blue: rgba(91, 156, 246, 0.2)
+  label-badge-green: rgba(52, 211, 153, 0.2)
+  label-badge-yellow: rgba(251, 191, 36, 0.2)
+  mini-media-player-base-color: var(--text-color)
+  mini-media-player-accent-color: var(--accent-color)
+  mini-media-player-button-color: var(--ha-card-background)
+  code-editor-background-color: var(--background-color-2)
+  lovelace-horizontal-padding: 10px
+  vertical-stack-card-gap: 8px
+  stack-card-gap: 0px
+  card-mod-theme: Avery Modern
+  card-mod-view-yaml: "hui-sections-view:\n  $: |\n    .container {\n      gap: 14px !important;\n    }\n    .sections {\n      gap: 14px !important;\n    }\nhui-section:\n  $: |\n    .container {\n      gap: 10px !important;\n    }"
+  lovelace-background: 'radial-gradient(circle at 12% 18%, rgba(255,255,255,0.06), transparent 28%), linear-gradient(145deg,
+    #2c2c2e 0%, #202022 46%, #161618 100%)'
+  app-header-text-color: '#ffffff'
+  app-header-selection-bar-color: '#ffffff'
+  sidebar-selected-background-color: '#282828'
+  masonry-view-card-margin: 0px
+  horizontal-stack-card-gap: 10px
+  card-mod-root-yaml: ".: |\n  app-toolbar {\n    background: rgba(44,44,46,0.86) !important;\n    backdrop-filter: blur(18px);\n\
+    \    color: #fff !important;\n  }\n  hui-view {\n    background: transparent !important;\n  }"
+  card-mod-card-yaml: ".: |\n  ha-card {\n    background: rgba(255,255,255,0.10) !important;\n    color: #fff !important;\n\
+    \    border: 0 !important;\n    box-shadow: none !important;\n    backdrop-filter: blur(14px);\n\
+    \    overflow: hidden;\n  }\n  ha-card:hover {\n    background: rgba(255,255,255,0.16) !important;\n  }\n  ha-card .card-header,\n\
+    \  ha-card h1,\n  ha-card h2,\n  ha-card h3 {\n    color: #fff !important;\n    font-weight: 800 !important;\n    letter-spacing:\
+    \ -0.01em;\n  }\nhui-heading-card:\n  $: |\n    .container {\n      padding: 0 !important;\n    }\n    h1, h2, h3 {\n\
+    \      color: #fff !important;\n      font-weight: 800 !important;\n      letter-spacing: -0.02em !important;\n    }\n\
+    \    .badges {\n      color: rgba(255,255,255,0.78) !important;\n    }\nhui-button-card:\n  $: |\n    ha-card {\n    \
+    \  aspect-ratio: 1 / 1;\n      min-height: 0 !important;\n      display: flex !important;\n    }\n    .grid {\n      grid-template-rows:\
+    \ 1fr min-content min-content !important;\n      align-content: center !important;\n      justify-content: start !important;\n\
+    \      padding: 18px !important;\n    }\n    ha-state-icon {\n      color: #fff !important;\n      --mdc-icon-size: 30px;\n\
+    \      opacity: .9;\n    }\n    .name {\n      color: #fff !important;\n      font-size: 15px !important;\n      font-weight:\
+    \ 750 !important;\n      justify-self: start !important;\n    }\n    .state {\n      color: rgba(255,255,255,0.76) !important;\n\
+    \      font-size: 13px !important;\n      font-weight: 700 !important;\n      justify-self: start !important;\n    }\n\
+    hui-grid-card:\n  $: |\n    #root {\n      gap: 10px !important;\n    }"
