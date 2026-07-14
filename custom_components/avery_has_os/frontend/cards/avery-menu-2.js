@@ -3,7 +3,7 @@ const ROOT_PARENT = '0';
 // Bump this on every meaningful cut. It's shown in the card editor and logged
 // to the console so you can confirm which build is actually loaded (defeats
 // silent browser caching of an old module).
-const CARD_VERSION = '0.2';
+const CARD_VERSION = '0.3';
 
 const CSS = `
   :host {
@@ -342,9 +342,9 @@ const CSS = `
   .desktop-item.open::after {
     content: "";
     position: absolute;
-    left: 10px;
-    right: 10px;
-    bottom: -5px;
+    left: 14px;
+    right: 4px;
+    bottom: 0px;
     height: 2px;
     border-radius: 999px;
     background: var(--am-title);
