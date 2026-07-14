@@ -36,6 +36,26 @@ _FRONTEND_REGISTERED = False
 _WS_REGISTERED = False
 
 
+def _asset_versions(frontend_dir: Path) -> dict[str, int | str]:
+    """Return a {filename: cache-bust token} map from file mtimes.
+
+    Runs in an executor (blocking stat IO). Falls back to the integration
+    VERSION if a file can't be stat'd, so a URL is always produced.
+    """
+    versions: dict[str, int | str] = {}
+
+    def _mtime(path: Path) -> int | str:
+        try:
+            return int(path.stat().st_mtime)
+        except OSError:
+            return VERSION
+
+    versions[FRONTEND_SCRIPT] = _mtime(frontend_dir / FRONTEND_SCRIPT)
+    for card in CARDS:
+        versions[card] = _mtime(frontend_dir / "cards" / card)
+    return versions
+
+
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Avery HAS OS from a config entry."""
     global _FRONTEND_REGISTERED, _WS_REGISTERED
@@ -55,11 +75,21 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         # Load the shared runtime first, then every bundled free card — all as ES
         # modules, on every frontend page. Each card self-registers into the
         # ＋ Add Card picker, so a single install exposes the whole free suite
-        # with no manual resource management. The ?v= query busts the browser
-        # cache when the integration version changes.
-        frontend.add_extra_js_url(hass, f"{URL_BASE}/{FRONTEND_SCRIPT}?v={VERSION}")
+        # with no manual resource management.
+        #
+        # The ?v= cache-bust token is derived from each file's modification time,
+        # not the integration version. This means an updated card (new release,
+        # or a hot-swapped file during dev) always gets a fresh URL and browsers
+        # refetch it — a version-only token would leave stale modules cached
+        # whenever a file changed without a version bump.
+        versions = await hass.async_add_executor_job(_asset_versions, frontend_dir)
+        frontend.add_extra_js_url(
+            hass, f"{URL_BASE}/{FRONTEND_SCRIPT}?v={versions[FRONTEND_SCRIPT]}"
+        )
         for card in CARDS:
-            frontend.add_extra_js_url(hass, f"{CARDS_URL_BASE}/{card}?v={VERSION}")
+            frontend.add_extra_js_url(
+                hass, f"{CARDS_URL_BASE}/{card}?v={versions[card]}"
+            )
         _FRONTEND_REGISTERED = True
         _LOGGER.info(
             "Avery HAS OS frontend runtime + %d free cards registered at %s",
