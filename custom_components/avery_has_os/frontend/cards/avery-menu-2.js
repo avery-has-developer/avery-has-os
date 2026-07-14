@@ -1,5 +1,10 @@
 const ROOT_PARENT = '0';
 
+// Bump this on every meaningful cut. It's shown in the card editor and logged
+// to the console so you can confirm which build is actually loaded (defeats
+// silent browser caching of an old module).
+const CARD_VERSION = '0.2';
+
 const CSS = `
   :host {
     display: block;
@@ -1698,6 +1703,7 @@ class AveryMenu2Editor extends HTMLElement {
           <button class="add" type="button" onclick="window._averyMenu2AddItem()">Add Menu Item</button>
           <button class="add" type="button" onclick="window._averyMenu2AddDivider()">Add Divider</button>
         </div>
+        <div style="text-align:center;font-size:10px;font-weight:600;letter-spacing:.04em;opacity:.5;padding-top:2px;">Avery Menu Card · v${CARD_VERSION}</div>
       </div>`;
 
     window._averyMenu2Update = (field, value) => {
@@ -1796,4 +1802,7 @@ window.customCards.push({ preview: false,
   type: 'avery-menu-2',
   name: 'Avery Menu 2',
   description: 'Configurable local-state menu based on Avery Divider Card',
+  version: CARD_VERSION,
 });
+
+console.info(`%c AVERY MENU CARD %c v${CARD_VERSION} `, 'background:#5b9cf6;color:#fff;border-radius:3px 0 0 3px;padding:2px 4px', 'background:#1f2937;color:#fff;border-radius:0 3px 3px 0;padding:2px 4px');
