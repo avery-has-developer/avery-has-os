@@ -1525,16 +1525,16 @@ class AveryMenu2Editor extends HTMLElement {
         <div class="section">
           <h3>Settings</h3>
           <div class="row">
-            <label>Title</label>
+            <label>Title<small>Brand text on the left of the bar. Hide it with “Show title” below.</small></label>
             <input value="${escapeHtml(cfg.title)}" onchange="window._averyMenu2Update('title', this.value)">
           </div>
           <div class="row icon-row">
-            <label>Header icon</label>
+            <label>Header icon<small>Icon shown in the tile beside the title.</small></label>
             <ha-icon-picker data-field="icon"></ha-icon-picker>
             <span class="icon-preview">${headerIconHtml(cfg.icon)}</span>
           </div>
           <div class="row">
-            <label>Theme</label>
+            <label>Theme<small>Follow the dashboard theme, or force dark/light for this bar.</small></label>
             <select onchange="window._averyMenu2Update('theme', this.value)">
               <option value="dashboard" ${cfg.theme === 'dashboard' ? 'selected' : ''}>Use dashboard theme</option>
               <option value="dark" ${cfg.theme === 'dark' ? 'selected' : ''}>Dark</option>
@@ -1542,7 +1542,7 @@ class AveryMenu2Editor extends HTMLElement {
             </select>
           </div>
           <div class="row">
-            <label>Layout</label>
+            <label>Layout<small>Responsive adapts to width · Hamburger collapses to a button · Horizontal keeps one row.</small></label>
             <select onchange="window._averyMenu2Update('layout', this.value)">
               <option value="responsive" ${cfg.layout === 'responsive' ? 'selected' : ''}>Responsive</option>
               <option value="hamburger" ${cfg.layout === 'hamburger' ? 'selected' : ''}>Hamburger</option>
@@ -1550,7 +1550,7 @@ class AveryMenu2Editor extends HTMLElement {
             </select>
           </div>
           <div class="row">
-            <label>Menu align</label>
+            <label>Menu align<small>Where the nav items sit in the bar — left, centre, or right.</small></label>
             <select onchange="window._averyMenu2Update('menu_align', this.value)">
               <option value="left" ${cfg.menu_align === 'left' ? 'selected' : ''}>Left</option>
               <option value="center" ${cfg.menu_align === 'center' ? 'selected' : ''}>Center</option>
@@ -1558,85 +1558,85 @@ class AveryMenu2Editor extends HTMLElement {
             </select>
           </div>
           <div class="row">
-            <label>Font scale</label>
+            <label>Font scale<small>Overall size multiplier — 1 is default, 1.2 is 20% larger.</small></label>
             <input type="number" min="0.6" max="2" step="0.05" value="${escapeHtml(cfg.font_scale ?? 1)}" placeholder="1" onchange="window._averyMenu2Update('font_scale', Number(this.value) || 1)">
           </div>
           <div class="row">
-            <label>Expanded desktop submenus</label>
+            <label>Expanded desktop submenus<small>Comma-separated parent labels/ids to keep open on desktop, e.g. rooms,apps.</small></label>
             <input value="${escapeHtml(cfg.expanded_desktop_submenus || '')}" placeholder="rooms,apps" onchange="window._averyMenu2Update('expanded_desktop_submenus', this.value)">
           </div>
           <div class="row">
-            <label>Variable name</label>
+            <label>Variable name<small>Dashboard variable this menu sets to the selected item’s id.</small></label>
             <input value="${escapeHtml(cfg.variable_name)}" onchange="window._averyMenu2Update('variable_name', this.value)">
           </div>
           <div class="row">
-            <label>State entity</label>
+            <label>State entity<small>Optional entity to store/read the active selection (instead of a variable).</small></label>
             <ha-entity-picker data-field="entity"></ha-entity-picker>
           </div>
           <div class="row">
-            <label>Navigate on select</label>
+            <label>Navigate on select<small>Also navigate to the item’s path when it’s chosen.</small></label>
             <input type="checkbox" ${cfg.navigate_on_select ? 'checked' : ''} onchange="window._averyMenu2Update('navigate_on_select', this.checked)">
           </div>
-          <div class="row${cfg.layout !== 'hamburger' ? ' disabled' : ''}">
-            <label>Show title${cfg.layout !== 'hamburger' ? '<small>Hamburger layout only</small>' : ''}</label>
-            <input type="checkbox" ${cfg.show_title !== false ? 'checked' : ''} ${cfg.layout !== 'hamburger' ? 'disabled' : ''} onchange="window._averyMenu2Update('show_title', this.checked)">
+          <div class="row">
+            <label>Show title<small>Show the brand text on the left. Off = nav items start at the edge.</small></label>
+            <input type="checkbox" ${cfg.show_title !== false ? 'checked' : ''} onchange="window._averyMenu2Update('show_title', this.checked)">
           </div>
           <div class="row">
-            <label>Header icon</label>
+            <label>Show header icon<small>Show or hide the icon tile beside the title.</small></label>
             <input type="checkbox" ${cfg.show_header_icon !== false ? 'checked' : ''} onchange="window._averyMenu2Update('show_header_icon', this.checked)">
           </div>
           <div class="row">
-            <label>Menu icons</label>
+            <label>Menu icons<small>Show an icon next to each menu item’s label.</small></label>
             <input type="checkbox" ${cfg.show_menu_icons !== false ? 'checked' : ''} onchange="window._averyMenu2Update('show_menu_icons', this.checked)">
           </div>
           <div class="row">
-            <label>Secondary info</label>
+            <label>Secondary info<small>Show the small status line under the title.</small></label>
             <input type="checkbox" ${cfg.show_secondary_info !== false ? 'checked' : ''} onchange="window._averyMenu2Update('show_secondary_info', this.checked)">
           </div>
           <div class="row">
-            <label>Door status</label>
+            <label>Door status<small>Show front-door open/closed and its battery in the bar.</small></label>
             <input type="checkbox" ${cfg.show_door_status ? 'checked' : ''} onchange="window._averyMenu2Update('show_door_status', this.checked)">
           </div>
           <div class="row">
-            <label>Door entity</label>
+            <label>Door entity<small>Contact/binary sensor read for the door open/closed state.</small></label>
             <ha-entity-picker data-field="door_entity"></ha-entity-picker>
           </div>
           <div class="row">
-            <label>Battery entity</label>
+            <label>Battery entity<small>Battery level for the door sensor above.</small></label>
             <ha-entity-picker data-field="door_battery_entity"></ha-entity-picker>
           </div>
         </div>
         <div class="section">
           <h3>Status Bar</h3>
           <div class="row">
-            <label>Show status bar</label>
+            <label>Show status bar<small>A right-aligned block showing this device’s battery, clock, name and connection — separate from “Secondary info”.</small></label>
             <input type="checkbox" ${cfg.show_status_bar ? 'checked' : ''} onchange="window._averyMenu2Update('show_status_bar', this.checked)">
           </div>
           <div class="row">
-            <label>Battery</label>
+            <label>Battery<small>Show this device’s battery level.</small></label>
             <input type="checkbox" ${cfg.show_status_battery !== false ? 'checked' : ''} onchange="window._averyMenu2Update('show_status_battery', this.checked)">
           </div>
           <div class="row">
-            <label>Clock</label>
+            <label>Clock<small>Show the current time.</small></label>
             <input type="checkbox" ${cfg.show_status_clock !== false ? 'checked' : ''} onchange="window._averyMenu2Update('show_status_clock', this.checked)">
           </div>
           <div class="row">
-            <label>Clock format</label>
+            <label>Clock format<small>12- or 24-hour time.</small></label>
             <select onchange="window._averyMenu2Update('status_clock_format', this.value)">
               <option value="24h" ${cfg.status_clock_format === '24h' ? 'selected' : ''}>24-hour</option>
               <option value="12h" ${cfg.status_clock_format === '12h' ? 'selected' : ''}>12-hour</option>
             </select>
           </div>
           <div class="row">
-            <label>Clock seconds</label>
+            <label>Clock seconds<small>Include seconds in the time.</small></label>
             <input type="checkbox" ${cfg.status_show_seconds ? 'checked' : ''} onchange="window._averyMenu2Update('status_show_seconds', this.checked)">
           </div>
           <div class="row">
-            <label>Device name</label>
+            <label>Device name<small>Show the browser/device name (from the HA companion app).</small></label>
             <input type="checkbox" ${cfg.show_status_device !== false ? 'checked' : ''} onchange="window._averyMenu2Update('show_status_device', this.checked)">
           </div>
           <div class="row">
-            <label>Network status</label>
+            <label>Network status<small>Show an online/offline connection indicator.</small></label>
             <input type="checkbox" ${cfg.show_status_network !== false ? 'checked' : ''} onchange="window._averyMenu2Update('show_status_network', this.checked)">
           </div>
         </div>
