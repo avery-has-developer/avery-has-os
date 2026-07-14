@@ -30,7 +30,7 @@ modifying resources, no managing customisations by hand.
 - 🧱 **Completely self-contained** — no other cards or add-ons required. No card-mod,
   no custom CSS, no YAML. Every card is fully configurable right in the dashboard UI.
 - 🪶 **Light & private** — no cloud, no account, no tracking. It just runs.
-- 🔓 **Free forever core** — the baseline is open source and free. Always.
+- 🔓 **Free & open source** — no account, no strings. It just runs.
 
 ## ✨ Included — free with every install
 
@@ -51,38 +51,28 @@ nothing else to download.
   <img src="https://raw.githubusercontent.com/avery-has-developer/avery-has-os/main/images/avery-screen-6.png" alt="Avery HAS OS — one install, every room" width="100%">
 </p>
 
-## 🔑 Avery Premium — unlock the full suite
+## 🚧 In development
 
-Want more? **Avery Premium** adds a whole collection of richer cards. Buy a key,
-paste it into Avery HAS OS, and they instantly appear as configurable cards in your
-dashboards — no extra installs, no fuss. No key, no clutter: you only ever see what
-you own.
+A wider set of Avery cards is in active development — listed here so you can see
+where the project is heading. These aren't available yet.
 
-Every premium card is **in active development** — not yet purchasable. This is the
-roadmap we're building toward; keys and unlocking arrive once the suite is ready.
-
-| | Card | What it does | Status |
-|---|------|--------------|--------|
-| 🤖 | **Jarvis-II** | A voice-assistant experience — a floating, always-there assistant for your home. | 🛠️ In development |
-| 🗣️ | **Avery Assist** | Alexa Mode + wake-word voice, making Jarvis smarter still. | 🛠️ In development |
-| 📅 | **Calendar** | A beautiful combined calendar across all your sources. | 🛠️ In development |
-| 🖼️ | **Photo Frame** | Turn any dashboard into a rotating photo display. | 🛠️ In development |
-| ✅ | **To-Do** | Designed task lists that actually look good. | 🛠️ In development |
-| 🛒 | **Grocery** | A smart, aisle-aware shopping list. | 🛠️ In development |
-| 🌡️ | **Nest** | A rich Nest thermostat & climate card. | 🛠️ In development |
-| 📹 | **Blink + CCTV** | Live camera views and motion clips, beautifully presented. | 🛠️ In development |
-| 🐾 | **Cat** | A playful pet-status card. | 🛠️ In development |
-| ⏳ | **Countdown** | Count down to the moments that matter. | 🛠️ In development |
-| 🎵 | **Music Player** | A gorgeous media player for your whole home. | 🛠️ In development |
-| ♨️ | **Thermostat** | An advanced climate dial with fine control. | 🛠️ In development |
-| 💡 | **Light Group** | Group and control your lights with style. | 🛠️ In development |
-| 📺 | **LG TV** | Full control of your LG (webOS) television. | 🛠️ In development |
-| 🔌 | **Appliances & Events** | Appliance status and household events at a glance. | 🛠️ In development |
-
-> **How unlocking will work:** premium cards will be delivered only to key-holders.
-> Enter a valid key in Avery HAS OS and it fetches and enables them — they show up in
-> the add-card picker automatically. Everything you had free stays free. *(Keys and
-> the premium suite are still in development — not yet available to purchase.)*
+| | Card | What it does |
+|---|------|--------------|
+| 🤖 | **Jarvis-II** | A voice-assistant experience — a floating, always-there assistant for your home. |
+| 🗣️ | **Avery Assist** | Alexa Mode + wake-word voice, making Jarvis smarter still. |
+| 📅 | **Calendar** | A beautiful combined calendar across all your sources. |
+| 🖼️ | **Photo Frame** | Turn any dashboard into a rotating photo display. |
+| ✅ | **To-Do** | Designed task lists that actually look good. |
+| 🛒 | **Grocery** | A smart, aisle-aware shopping list. |
+| 🌡️ | **Nest** | A rich Nest thermostat & climate card. |
+| 📹 | **Blink + CCTV** | Live camera views and motion clips, beautifully presented. |
+| 🐾 | **Cat** | A playful pet-status card. |
+| ⏳ | **Countdown** | Count down to the moments that matter. |
+| 🎵 | **Music Player** | A gorgeous media player for your whole home. |
+| ♨️ | **Thermostat** | An advanced climate dial with fine control. |
+| 💡 | **Light Group** | Group and control your lights with style. |
+| 📺 | **LG TV** | Full control of your LG (webOS) television. |
+| 🔌 | **Appliances & Events** | Appliance status and household events at a glance. |
 
 ## Installation
 
@@ -96,18 +86,11 @@ roadmap we're building toward; keys and unlocking arrive once the suite is ready
 
 That's it — the free cards and themes are now ready in your dashboards.
 
-### Unlocking Premium *(coming soon)*
-
-Once the premium suite ships, you'll open Avery HAS OS in **Settings → Devices &
-Services**, paste your license key, and the premium cards appear in the add-card
-picker within moments. Premium keys aren't available to purchase yet.
-
 ## Roadmap & honesty
 
-Avery HAS OS is **free today** and the baseline always will be — open source, no
-strings. Premium is how the project sustains itself; it's entirely optional, and
-nothing that's free will ever move behind the paywall. Built in the open, as a
-labour of love.
+Avery HAS OS is **free and open source**, built in the open as a labour of love.
+The cards and themes above install in one step; more are in development. That's
+the whole story for now.
 
 ## Credits & license
 
