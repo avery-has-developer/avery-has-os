@@ -5,7 +5,15 @@ import { AV_EDITOR_CSS, section, row, textField, themeRow, colorsSection, dimens
 
 // Bump on every meaningful cut. Shown in the editor + logged on load so it's
 // always clear which build is loaded.
-const CARD_VERSION = '1.0';
+const CARD_VERSION = '1.1';
+
+// The HA iOS companion app (WKWebView) ignores HTMLMediaElement.volume and
+// can't route native-HLS audio through a Web Audio graph, so an on-screen
+// volume slider genuinely can't set intermediate volume there — hardware
+// buttons own it. On iOS we hide the slider rather than show a dead control.
+// Covers iPhone/iPod, old-UA iPad, and iPadOS masquerading as Mac.
+const IS_IOS = /iP(hone|od|ad)/.test(navigator.userAgent) ||
+  (/Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints > 1);
 
 // Signature BBC-radio palette — the colour defaults in the editor (accent + glows).
 const BBC_COLORS = { accent_color: '#ff375f', glow_color_1: '#ff375f', glow_color_2: '#ffb020', glow_color_3: '#7a5cff' };
@@ -177,24 +185,40 @@ TMPL.innerHTML = `
   }
   .ctrl:hover { background: rgba(255,255,255,.16); }
   .ctrl svg { width: 10px; height: 10px; }
-  /* volume row — HA-native slider (works with touch in the iOS companion app,
-     unlike a custom <input type=range>). Same class of control mini-media-player
-     uses. */
+  /* volume row — our styled range slider recessed in a well (matches the
+     capsule sliders on the other Avery media cards). Hidden on iOS, where an
+     on-screen slider can't set stream volume anyway (hardware buttons own it). */
   .vol-well {
     flex: 1 1 auto; min-width: 0; height: 24px;
-    display: flex; align-items: center; padding: 0 6px; gap: 8px;
+    display: flex; align-items: center; padding: 0 8px; gap: 8px;
+    border-radius: 999px;
+    background: linear-gradient(180deg, rgba(0,0,0,.30) 0%, rgba(0,0,0,.12) 100%), rgba(255,255,255,.04);
+    box-shadow: inset 0 1.5px 2px rgba(0,0,0,.5), inset 0 -1px 0 rgba(255,255,255,.05);
   }
+  .vol-well[hidden] { display: none; }
   .vol-ic { width: 13px; height: 13px; flex: none; color: rgba(255,255,255,.85); }
-  ha-slider {
-    flex: 1; min-width: 0;
-    /* Stop a scrollable view from stealing the drag in the iOS companion app
-       (WKWebView reads it as a scroll otherwise). */
+  .slider-wrap {
+    position: relative; flex: 1; min-width: 0;
+    display: flex; align-items: center; height: 22px;
+    /* Stop a scrollable view / nav-gesture card from stealing the drag. */
     touch-action: none;
-    --primary-color: var(--accent);
-    --md-sys-color-primary: var(--accent);
-    --paper-slider-active-color: var(--accent);
-    --paper-slider-knob-color: var(--accent);
-    --paper-slider-pin-color: var(--accent);
+  }
+  .slider {
+    -webkit-appearance: none; appearance: none;
+    width: 100%; height: 4px; border-radius: 999px; margin: 0; outline: none; cursor: pointer;
+    background: linear-gradient(to right,
+      var(--accent) 0%, var(--accent) var(--val, 70%),
+      rgba(255,255,255,.18) var(--val, 70%), rgba(255,255,255,.18) 100%);
+  }
+  .slider::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%;
+    background: linear-gradient(180deg, #fff 0%, #e9e9ec 100%);
+    box-shadow: 0 1px 3px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.95); cursor: pointer;
+  }
+  .slider::-moz-range-thumb {
+    width: 14px; height: 14px; border: 0; border-radius: 50%;
+    background: linear-gradient(180deg, #fff 0%, #e9e9ec 100%);
+    box-shadow: 0 1px 3px rgba(0,0,0,.45); cursor: pointer;
   }
   .vol-val { font-size: 10px; color: rgba(255,255,255,.85); min-width: 20px; text-align: right; font-variant-numeric: tabular-nums; flex: none; }
 
@@ -241,9 +265,9 @@ TMPL.innerHTML = `
     <button class="ctrl" id="prevBtn" title="Previous station">
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zM9.5 12l8.5 6V6z"/></svg>
     </button>
-    <div class="vol-well">
+    <div class="vol-well" id="volWell">
       <svg class="vol-ic" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
-      <ha-slider id="volSlider" min="0" max="100" step="1" value="70"></ha-slider>
+      <span class="slider-wrap"><input type="range" id="volSlider" class="slider" min="0" max="100" step="1" value="70"></span>
       <span class="vol-val" id="volVal">70</span>
     </div>
     <button class="ctrl" id="nextBtn" title="Next station">
@@ -311,21 +335,14 @@ class AveryBBCRadioCard extends HTMLElement {
     this._audio = sr.getElementById('audio');
     this._card  = sr.getElementById('card');
 
-    // HA's native <ha-slider> (what mini-media-player uses) — handles touch in
-    // the iOS companion app where a custom <input type=range> does not. Make
-    // sure it's registered; it upgrades in place once defined, so a lazy load
-    // is fine.
-    if (!customElements.get('ha-slider') && window.loadCardHelpers) {
-      window.loadCardHelpers().catch(() => {});
-    }
+    // On iOS the slider can't set stream volume (WKWebView ignores it; native
+    // HLS bypasses Web Audio) — hide it and let the hardware buttons own volume.
+    if (IS_IOS) sr.getElementById('volWell').hidden = true;
+
     const slider = sr.getElementById('volSlider');
-    const onVol = (e) => {
-      const raw = (e.detail && e.detail.value != null) ? e.detail.value : e.target.value;
-      this._setVolume(Number(raw) / 100, true);
-    };
-    slider.addEventListener('input', onVol);         // live during drag
-    slider.addEventListener('change', onVol);        // committed
-    slider.addEventListener('value-changed', onVol); // legacy paper-slider
+    const onVol = (e) => this._setVolume(Number(e.target.value) / 100, true);
+    slider.addEventListener('input', onVol);   // live during drag
+    slider.addEventListener('change', onVol);  // committed
 
     sr.getElementById('playBtn').addEventListener('click', () => this._togglePlay());
     sr.getElementById('prevBtn').addEventListener('click', () =>
@@ -493,7 +510,10 @@ class AveryBBCRadioCard extends HTMLElement {
     const pct = Math.round(v * 100);
     const sl  = this.shadowRoot.getElementById('volSlider');
     const val = this.shadowRoot.getElementById('volVal');
-    if (sl && !fromSlider) sl.value = pct;   // don't fight the user's drag
+    if (sl) {
+      if (!fromSlider) sl.value = pct;   // don't fight the user's drag
+      sl.style.setProperty('--val', pct + '%');
+    }
     if (val) val.textContent = String(pct);
   }
 
