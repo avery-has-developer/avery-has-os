@@ -5,7 +5,7 @@ import { AV_EDITOR_CSS, section, row, textField, themeRow, colorsSection, dimens
 
 // Bump on every meaningful cut. Shown in the editor + logged on load so it's
 // always clear which build is loaded.
-const CARD_VERSION = '0.9';
+const CARD_VERSION = '1.0';
 
 // Signature BBC-radio palette — the colour defaults in the editor (accent + glows).
 const BBC_COLORS = { accent_color: '#ff375f', glow_color_1: '#ff375f', glow_color_2: '#ffb020', glow_color_3: '#7a5cff' };
@@ -394,7 +394,6 @@ class AveryBBCRadioCard extends HTMLElement {
 
   disconnectedCallback() {
     clearInterval(this._metaTimer);
-    if (this._actx) { try { this._actx.close(); } catch (_) {} this._actx = null; this._gain = null; this._srcNode = null; }
   }
 
   _updateInfo() {
@@ -480,8 +479,16 @@ class AveryBBCRadioCard extends HTMLElement {
   _setVolume(v, fromSlider) {
     v = Math.max(0, Math.min(1, v));
     this._volume = v;
-    if (this._gain) this._gain.gain.value = v;          // Web Audio path (works on iOS)
-    else if (this._audio) this._audio.volume = v;       // pre-graph / no-WebAudio fallback
+    if (this._audio) {
+      // audio.volume is honoured on desktop, Android and iOS *Safari*, but the
+      // HA iOS companion app (WKWebView) ignores it outright — and Web Audio
+      // gain can't help there either, because on iPhone HLS is decoded natively
+      // (no MSE) so it never flows through a JS audio graph. The one volume
+      // control every iOS webview honours is `muted`, so slider-to-zero mutes
+      // everywhere; fine volume in the app is the hardware buttons' job.
+      this._audio.volume = v;
+      this._audio.muted = v <= 0;
+    }
     localStorage.setItem('avery-bbc-volume', String(v));
     const pct = Math.round(v * 100);
     const sl  = this.shadowRoot.getElementById('volSlider');
@@ -548,31 +555,7 @@ class AveryBBCRadioCard extends HTMLElement {
     }
   }
 
-  // Route playback through a Web Audio GainNode. iOS makes HTMLMediaElement.volume
-  // READ-ONLY (hardware buttons own it), but it DOES honour Web Audio gain — so
-  // the volume slider actually works on iOS this way. Built lazily inside a play
-  // gesture so the AudioContext is allowed to start; the element then outputs
-  // only through the graph, so gain fully controls loudness (audio.volume = 1).
-  _ensureAudioGraph() {
-    if (this._gain || this._audioGraphFailed) return;
-    try {
-      const AC = window.AudioContext || window.webkitAudioContext;
-      if (!AC) { this._audioGraphFailed = true; return; }
-      this._actx = new AC();
-      this._srcNode = this._actx.createMediaElementSource(this._audio);
-      this._gain = this._actx.createGain();
-      this._srcNode.connect(this._gain);
-      this._gain.connect(this._actx.destination);
-      this._gain.gain.value = this._volume;
-      this._audio.volume = 1;
-    } catch (_) {
-      this._audioGraphFailed = true;   // fall back to audio.volume (non-iOS)
-    }
-  }
-
   _play() {
-    this._ensureAudioGraph();
-    if (this._actx && this._actx.state === 'suspended') this._actx.resume().catch(() => {});
     return this._audio.play().catch(() => {});
   }
 
