@@ -1,11 +1,11 @@
 // avery-bbc-radio-card.js — browser HLS/stream player for BBC live radio.
 // Plays the public BBC streams directly; no BBC account/auth (that path is
 // CORS-blocked from a browser origin).
-import { AV_EDITOR_CSS, section, row, textField, numberField, themeRow, colorsSection, bindEditor } from './avery-card-editor.js?v=8';
+import { AV_EDITOR_CSS, section, row, textField, themeRow, colorsSection, dimensionsSection, bindEditor } from './avery-card-editor.js?v=8';
 
 // Bump on every meaningful cut. Shown in the editor + logged on load so it's
 // always clear which build is loaded.
-const CARD_VERSION = '0.6';
+const CARD_VERSION = '0.7';
 
 // Signature BBC-radio palette — the colour defaults in the editor (accent + glows).
 const BBC_COLORS = { accent_color: '#ff375f', glow_color_1: '#ff375f', glow_color_2: '#ffb020', glow_color_3: '#7a5cff' };
@@ -15,6 +15,7 @@ const DEFAULT_CONFIG = {
   default_station: 0,
   name: '',
   theme: 'dashboard',
+  height: 120,
   corner_radius: 12,
   ...BBC_COLORS,
 };
@@ -64,40 +65,6 @@ async function ensureHls() {
   return null;
 }
 
-// Make a range input draggable via POINTER events, not the native range's own
-// touch handling. The iOS Home Assistant companion app (WKWebView) doesn't
-// deliver touch-drags to custom-styled <input type=range>, so the thumb won't
-// move — even though it works in mobile Safari. Pointer events fire reliably in
-// both, so we drive the value ourselves and dispatch a synthetic 'input' event
-// (the card's existing input listener still does the work). Additive: native
-// click/keyboard still function.
-function enableSliderDrag(wrap, input) {
-  if (!wrap || !input || wrap._avDrag) return;
-  wrap._avDrag = true;
-  const setFromX = (clientX) => {
-    const r = input.getBoundingClientRect();
-    if (!r.width) return;
-    const min = Number(input.min || 0), max = Number(input.max || 100);
-    const pct = Math.max(0, Math.min(1, (clientX - r.left) / r.width));
-    const val = Math.round(min + pct * (max - min));
-    if (String(val) !== input.value) {
-      input.value = String(val);
-      input.dispatchEvent(new Event('input', { bubbles: true }));
-    }
-  };
-  wrap.addEventListener('pointerdown', (e) => {
-    if (e.pointerType === 'mouse' && e.button !== 0) return;
-    try { wrap.setPointerCapture(e.pointerId); } catch (_) {}
-    wrap._dragging = true;
-    setFromX(e.clientX);
-    e.preventDefault();
-  });
-  wrap.addEventListener('pointermove', (e) => { if (wrap._dragging) setFromX(e.clientX); });
-  const end = (e) => { wrap._dragging = false; try { wrap.releasePointerCapture(e.pointerId); } catch (_) {} };
-  wrap.addEventListener('pointerup', end);
-  wrap.addEventListener('pointercancel', end);
-}
-
 const TMPL = document.createElement('template');
 TMPL.innerHTML = `
 <style>
@@ -116,7 +83,7 @@ TMPL.innerHTML = `
   }
   .card {
     position: relative;
-    width: 100%; min-height: 120px;
+    width: 100%; min-height: var(--am-height, 120px);
     border-radius: var(--radius);
     overflow: hidden;
     background: var(--bg);
@@ -124,6 +91,7 @@ TMPL.innerHTML = `
     padding: 12px 12px 10px;
     box-sizing: border-box;
     display: flex; flex-direction: column;
+    justify-content: center;
     gap: 8px;
     color: var(--text);
   }
@@ -209,29 +177,21 @@ TMPL.innerHTML = `
   }
   .ctrl:hover { background: rgba(255,255,255,.16); }
   .ctrl svg { width: 10px; height: 10px; }
-  /* volume slider — shared Avery media-card style */
+  /* volume row — HA-native slider (works with touch in the iOS companion app,
+     unlike a custom <input type=range>). Same class of control mini-media-player
+     uses. */
   .vol-well {
-    flex: 1 1 auto; min-width: 0; height: 24px; border-radius: 999px;
-    background: linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,.15)), rgba(255,255,255,.04);
-    display: flex; align-items: center; padding: 0 10px; gap: 8px;
-    box-shadow: inset 0 1.5px 2px rgba(0,0,0,.55), inset 0 -1px 0 rgba(255,255,255,.06);
+    flex: 1 1 auto; min-width: 0; height: 24px;
+    display: flex; align-items: center; padding: 0 6px; gap: 8px;
   }
   .vol-ic { width: 13px; height: 13px; flex: none; color: rgba(255,255,255,.85); }
-  .slider-wrap { position: relative; flex: 1; min-width: 0; display: flex; align-items: center; height: 20px; touch-action: none; }
-  .av-slider {
-    -webkit-appearance: none; appearance: none; width: 100%; height: 4px; border-radius: 999px;
-    outline: none; margin: 0; cursor: pointer;
-    background: linear-gradient(to right, #fff 0%, #fff var(--val,70%), rgba(255,255,255,.18) var(--val,70%), rgba(255,255,255,.18) 100%);
-  }
-  .av-slider::-webkit-slider-thumb {
-    -webkit-appearance: none; width: 34px; height: 16px; border-radius: 999px;
-    background: linear-gradient(180deg, #fff, #e9e9ec);
-    box-shadow: 0 1px 3px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.95); cursor: pointer;
-  }
-  .av-slider::-moz-range-thumb {
-    width: 34px; height: 16px; border: 0; border-radius: 999px;
-    background: linear-gradient(180deg, #fff, #e9e9ec);
-    box-shadow: 0 1px 3px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.95); cursor: pointer;
+  ha-control-slider {
+    flex: 1; min-width: 0;
+    --control-slider-color: var(--accent);
+    --control-slider-background: rgba(255,255,255,.20);
+    --control-slider-background-opacity: 1;
+    --control-slider-thickness: 14px;
+    --control-slider-border-radius: 999px;
   }
   .vol-val { font-size: 10px; color: rgba(255,255,255,.85); min-width: 20px; text-align: right; font-variant-numeric: tabular-nums; flex: none; }
 
@@ -280,7 +240,7 @@ TMPL.innerHTML = `
     </button>
     <div class="vol-well">
       <svg class="vol-ic" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
-      <span class="slider-wrap"><input type="range" class="av-slider" id="volSlider" min="0" max="100" value="70"></span>
+      <ha-control-slider id="volSlider" min="0" max="100" step="1" value="70"></ha-control-slider>
       <span class="vol-val" id="volVal">70</span>
     </div>
     <button class="ctrl" id="nextBtn" title="Next station">
@@ -329,6 +289,7 @@ class AveryBBCRadioCard extends HTMLElement {
     set('--am-glow-2', c.glow_color_2);
     set('--am-glow-3', c.glow_color_3);
     set('--am-radius', (c.corner_radius != null && c.corner_radius !== '') ? `${c.corner_radius}px` : null);
+    set('--am-height', (c.height != null && c.height !== '') ? `${c.height}px` : null);
     const card = this.shadowRoot && this.shadowRoot.getElementById('card');
     if (card) {
       card.classList.remove('theme-dark', 'theme-light', 'theme-dashboard');
@@ -347,9 +308,16 @@ class AveryBBCRadioCard extends HTMLElement {
     this._audio = sr.getElementById('audio');
     this._card  = sr.getElementById('card');
 
+    // HA's native slider handles touch correctly in the iOS companion app's
+    // WKWebView (a custom <input type=range> does not). Make sure it's registered
+    // — it upgrades in place once defined, so a lazy load is fine.
+    if (!customElements.get('ha-control-slider') && window.loadCardHelpers) {
+      window.loadCardHelpers().catch(() => {});
+    }
     const slider = sr.getElementById('volSlider');
-    slider.addEventListener('input', () => this._setVolume(Number(slider.value) / 100));
-    enableSliderDrag(slider.closest('.slider-wrap'), slider);
+    const onVol = (e) => this._setVolume(Number(e.detail.value) / 100, true);
+    slider.addEventListener('value-changed', onVol);   // committed
+    slider.addEventListener('slider-moved', onVol);    // live during drag
 
     sr.getElementById('playBtn').addEventListener('click', () => this._togglePlay());
     sr.getElementById('prevBtn').addEventListener('click', () =>
@@ -500,7 +468,7 @@ class AveryBBCRadioCard extends HTMLElement {
     this._card.classList.toggle('playing', this._playing);
   }
 
-  _setVolume(v) {
+  _setVolume(v, fromSlider) {
     v = Math.max(0, Math.min(1, v));
     this._volume = v;
     if (this._audio) this._audio.volume = v;
@@ -508,8 +476,7 @@ class AveryBBCRadioCard extends HTMLElement {
     const pct = Math.round(v * 100);
     const sl  = this.shadowRoot.getElementById('volSlider');
     const val = this.shadowRoot.getElementById('volVal');
-    if (sl)  { if (document.activeElement !== sl) sl.value = String(pct);
-               sl.style.setProperty('--val', pct + '%'); }
+    if (sl && !fromSlider) sl.value = pct;   // don't fight the user's drag
     if (val) val.textContent = String(pct);
   }
 
@@ -603,9 +570,7 @@ class AveryBBCRadioCardEditor extends HTMLElement {
         themeRow(c)
       )}
       ${colorsSection(c, BBC_COLORS)}
-      ${section('Dimensions',
-        row('Corner radius', numberField('corner_radius', c, { min: 0, max: 40, placeholder: '12' }))
-      )}
+      ${dimensionsSection(c, { height: 120, radius: 12 })}
       <div class="av-ed-ver">Avery BBC Radio Card · v${CARD_VERSION}</div>
     `;
     bindEditor(this.shadowRoot, {
