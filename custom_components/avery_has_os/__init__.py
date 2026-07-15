@@ -22,6 +22,7 @@ from homeassistant.components.http import StaticPathConfig
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
 
+from .bbc import AveryBBCNowPlayingView
 from .const import CARDS, CARDS_URL_BASE, DOMAIN, FRONTEND_SCRIPT, URL_BASE, VERSION
 from .entitlements import entitlements_snapshot
 from .themes import async_register_themes
@@ -99,6 +100,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     if not _WS_REGISTERED:
         websocket_api.async_register_command(hass, ws_entitlements)
+        # Server-side BBC now-playing proxy for the Avery BBC Radio card
+        # (BBC's API is CORS-blocked in the browser). Registered process-wide.
+        hass.http.register_view(AveryBBCNowPlayingView())
         _WS_REGISTERED = True
 
     # Deliver the bundled Avery themes so a single install populates the theme

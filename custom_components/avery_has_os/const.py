@@ -21,4 +21,5 @@ CARDS = [
     "avery-weather-card.js",
     "avery-menu-2.js",
     "avery-divider-card.js",
+    "avery-bbc-radio-card.js",
 ]
