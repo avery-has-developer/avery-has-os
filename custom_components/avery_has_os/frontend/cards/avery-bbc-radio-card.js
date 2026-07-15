@@ -5,7 +5,7 @@ import { AV_EDITOR_CSS, section, row, textField, themeRow, colorsSection, dimens
 
 // Bump on every meaningful cut. Shown in the editor + logged on load so it's
 // always clear which build is loaded.
-const CARD_VERSION = '1.1';
+const CARD_VERSION = '1.2';
 
 // The HA iOS companion app (WKWebView) ignores HTMLMediaElement.volume and
 // can't route native-HLS audio through a Web Audio graph, so an on-screen
@@ -189,14 +189,13 @@ TMPL.innerHTML = `
      capsule sliders on the other Avery media cards). Hidden on iOS, where an
      on-screen slider can't set stream volume anyway (hardware buttons own it). */
   .vol-well {
-    flex: 1 1 auto; min-width: 0; height: 24px;
-    display: flex; align-items: center; padding: 0 8px; gap: 8px;
-    border-radius: 999px;
-    background: linear-gradient(180deg, rgba(0,0,0,.30) 0%, rgba(0,0,0,.12) 100%), rgba(255,255,255,.04);
-    box-shadow: inset 0 1.5px 2px rgba(0,0,0,.5), inset 0 -1px 0 rgba(255,255,255,.05);
+    flex: 1 1 auto; min-width: 0; height: 28px; border-radius: 999px;
+    background: linear-gradient(180deg, rgba(0,0,0,.35) 0%, rgba(0,0,0,.15) 100%), rgba(255,255,255,.04);
+    display: flex; align-items: center; padding: 0 10px; gap: 8px;
+    box-shadow: inset 0 1.5px 2px rgba(0,0,0,.55), inset 0 -1px 0 rgba(255,255,255,.06), 0 1px 0 rgba(255,255,255,.04);
   }
   .vol-well[hidden] { display: none; }
-  .vol-ic { width: 13px; height: 13px; flex: none; color: rgba(255,255,255,.85); }
+  .vol-ic { width: 14px; height: 14px; flex: none; color: rgba(255,255,255,.85); }
   .slider-wrap {
     position: relative; flex: 1; min-width: 0;
     display: flex; align-items: center; height: 22px;
@@ -205,20 +204,22 @@ TMPL.innerHTML = `
   }
   .slider {
     -webkit-appearance: none; appearance: none;
-    width: 100%; height: 4px; border-radius: 999px; margin: 0; outline: none; cursor: pointer;
+    width: 100%; height: 4px; border-radius: 999px; outline: none; margin: 0; cursor: pointer;
     background: linear-gradient(to right,
-      var(--accent) 0%, var(--accent) var(--val, 70%),
+      #fff 0%, #fff var(--val, 70%),
       rgba(255,255,255,.18) var(--val, 70%), rgba(255,255,255,.18) 100%);
   }
   .slider::-webkit-slider-thumb {
-    -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%;
-    background: linear-gradient(180deg, #fff 0%, #e9e9ec 100%);
-    box-shadow: 0 1px 3px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.95); cursor: pointer;
+    -webkit-appearance: none; width: 38px; height: 18px; border-radius: 999px;
+    background: linear-gradient(180deg, #ffffff 0%, #e9e9ec 100%);
+    box-shadow: 0 1px 3px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.95), inset 0 -1px 1px rgba(0,0,0,.14);
+    cursor: pointer;
   }
   .slider::-moz-range-thumb {
-    width: 14px; height: 14px; border: 0; border-radius: 50%;
-    background: linear-gradient(180deg, #fff 0%, #e9e9ec 100%);
-    box-shadow: 0 1px 3px rgba(0,0,0,.45); cursor: pointer;
+    width: 38px; height: 18px; border: 0; border-radius: 999px;
+    background: linear-gradient(180deg, #ffffff 0%, #e9e9ec 100%);
+    box-shadow: 0 1px 3px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.95), inset 0 -1px 1px rgba(0,0,0,.14);
+    cursor: pointer;
   }
   .vol-val { font-size: 10px; color: rgba(255,255,255,.85); min-width: 20px; text-align: right; font-variant-numeric: tabular-nums; flex: none; }
 
