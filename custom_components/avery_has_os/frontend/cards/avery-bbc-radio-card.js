@@ -5,7 +5,7 @@ import { AV_EDITOR_CSS, section, row, textField, themeRow, colorsSection, dimens
 
 // Bump on every meaningful cut. Shown in the editor + logged on load so it's
 // always clear which build is loaded.
-const CARD_VERSION = '0.7';
+const CARD_VERSION = '0.8';
 
 // Signature BBC-radio palette — the colour defaults in the editor (accent + glows).
 const BBC_COLORS = { accent_color: '#ff375f', glow_color_1: '#ff375f', glow_color_2: '#ffb020', glow_color_3: '#7a5cff' };
@@ -185,13 +185,16 @@ TMPL.innerHTML = `
     display: flex; align-items: center; padding: 0 6px; gap: 8px;
   }
   .vol-ic { width: 13px; height: 13px; flex: none; color: rgba(255,255,255,.85); }
-  ha-control-slider {
+  ha-slider {
     flex: 1; min-width: 0;
-    --control-slider-color: var(--accent);
-    --control-slider-background: rgba(255,255,255,.20);
-    --control-slider-background-opacity: 1;
-    --control-slider-thickness: 14px;
-    --control-slider-border-radius: 999px;
+    /* Stop a scrollable view from stealing the drag in the iOS companion app
+       (WKWebView reads it as a scroll otherwise). */
+    touch-action: none;
+    --primary-color: var(--accent);
+    --md-sys-color-primary: var(--accent);
+    --paper-slider-active-color: var(--accent);
+    --paper-slider-knob-color: var(--accent);
+    --paper-slider-pin-color: var(--accent);
   }
   .vol-val { font-size: 10px; color: rgba(255,255,255,.85); min-width: 20px; text-align: right; font-variant-numeric: tabular-nums; flex: none; }
 
@@ -240,7 +243,7 @@ TMPL.innerHTML = `
     </button>
     <div class="vol-well">
       <svg class="vol-ic" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
-      <ha-control-slider id="volSlider" min="0" max="100" step="1" value="70"></ha-control-slider>
+      <ha-slider id="volSlider" min="0" max="100" step="1" value="70"></ha-slider>
       <span class="vol-val" id="volVal">70</span>
     </div>
     <button class="ctrl" id="nextBtn" title="Next station">
@@ -308,16 +311,21 @@ class AveryBBCRadioCard extends HTMLElement {
     this._audio = sr.getElementById('audio');
     this._card  = sr.getElementById('card');
 
-    // HA's native slider handles touch correctly in the iOS companion app's
-    // WKWebView (a custom <input type=range> does not). Make sure it's registered
-    // — it upgrades in place once defined, so a lazy load is fine.
-    if (!customElements.get('ha-control-slider') && window.loadCardHelpers) {
+    // HA's native <ha-slider> (what mini-media-player uses) — handles touch in
+    // the iOS companion app where a custom <input type=range> does not. Make
+    // sure it's registered; it upgrades in place once defined, so a lazy load
+    // is fine.
+    if (!customElements.get('ha-slider') && window.loadCardHelpers) {
       window.loadCardHelpers().catch(() => {});
     }
     const slider = sr.getElementById('volSlider');
-    const onVol = (e) => this._setVolume(Number(e.detail.value) / 100, true);
-    slider.addEventListener('value-changed', onVol);   // committed
-    slider.addEventListener('slider-moved', onVol);    // live during drag
+    const onVol = (e) => {
+      const raw = (e.detail && e.detail.value != null) ? e.detail.value : e.target.value;
+      this._setVolume(Number(raw) / 100, true);
+    };
+    slider.addEventListener('input', onVol);         // live during drag
+    slider.addEventListener('change', onVol);        // committed
+    slider.addEventListener('value-changed', onVol); // legacy paper-slider
 
     sr.getElementById('playBtn').addEventListener('click', () => this._togglePlay());
     sr.getElementById('prevBtn').addEventListener('click', () =>
