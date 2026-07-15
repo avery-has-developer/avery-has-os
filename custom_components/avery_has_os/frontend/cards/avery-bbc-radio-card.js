@@ -1,10 +1,23 @@
 // avery-bbc-radio-card.js — browser HLS/stream player for BBC live radio.
 // Plays the public BBC streams directly; no BBC account/auth (that path is
 // CORS-blocked from a browser origin).
+import { AV_EDITOR_CSS, section, row, textField, numberField, themeRow, colorsSection, bindEditor } from './avery-card-editor.js?v=8';
 
 // Bump on every meaningful cut. Shown in the editor + logged on load so it's
 // always clear which build is loaded.
-const CARD_VERSION = '0.5';
+const CARD_VERSION = '0.6';
+
+// Signature BBC-radio palette — the colour defaults in the editor (accent + glows).
+const BBC_COLORS = { accent_color: '#ff375f', glow_color_1: '#ff375f', glow_color_2: '#ffb020', glow_color_3: '#7a5cff' };
+
+// Standard Avery customisation parameters (+ this card's default_station).
+const DEFAULT_CONFIG = {
+  default_station: 0,
+  name: '',
+  theme: 'dashboard',
+  corner_radius: 12,
+  ...BBC_COLORS,
+};
 
 const STATIONS = [
   { name: 'BBC Radio 1',       short: 'R1',  vpid: 'bbc_radio_one',
@@ -51,6 +64,40 @@ async function ensureHls() {
   return null;
 }
 
+// Make a range input draggable via POINTER events, not the native range's own
+// touch handling. The iOS Home Assistant companion app (WKWebView) doesn't
+// deliver touch-drags to custom-styled <input type=range>, so the thumb won't
+// move — even though it works in mobile Safari. Pointer events fire reliably in
+// both, so we drive the value ourselves and dispatch a synthetic 'input' event
+// (the card's existing input listener still does the work). Additive: native
+// click/keyboard still function.
+function enableSliderDrag(wrap, input) {
+  if (!wrap || !input || wrap._avDrag) return;
+  wrap._avDrag = true;
+  const setFromX = (clientX) => {
+    const r = input.getBoundingClientRect();
+    if (!r.width) return;
+    const min = Number(input.min || 0), max = Number(input.max || 100);
+    const pct = Math.max(0, Math.min(1, (clientX - r.left) / r.width));
+    const val = Math.round(min + pct * (max - min));
+    if (String(val) !== input.value) {
+      input.value = String(val);
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+  };
+  wrap.addEventListener('pointerdown', (e) => {
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    try { wrap.setPointerCapture(e.pointerId); } catch (_) {}
+    wrap._dragging = true;
+    setFromX(e.clientX);
+    e.preventDefault();
+  });
+  wrap.addEventListener('pointermove', (e) => { if (wrap._dragging) setFromX(e.clientX); });
+  const end = (e) => { wrap._dragging = false; try { wrap.releasePointerCapture(e.pointerId); } catch (_) {} };
+  wrap.addEventListener('pointerup', end);
+  wrap.addEventListener('pointercancel', end);
+}
+
 const TMPL = document.createElement('template');
 TMPL.innerHTML = `
 <style>
@@ -79,6 +126,10 @@ TMPL.innerHTML = `
     display: flex; flex-direction: column;
     gap: 8px;
     color: var(--text);
+  }
+  .card.theme-light {
+    --text: #172033; --muted: rgba(23,32,51,.62);
+    --bg: rgba(255,255,255,.55); --border: rgba(0,0,0,.10);
   }
   .glow {
     position: absolute;
@@ -215,7 +266,7 @@ TMPL.innerHTML = `
     <div class="info">
       <div class="info-top">
         <span class="live-dot" id="liveDot" hidden></span>
-        <span class="live-label">Live</span>
+        <span class="live-label" id="liveLabel">Live</span>
       </div>
       <div class="station" id="stationName"></div>
     </div>
@@ -257,7 +308,7 @@ class AveryBBCRadioCard extends HTMLElement {
   }
 
   setConfig(config) {
-    this._config = config || {};
+    this._config = { ...DEFAULT_CONFIG, ...(config || {}) };
     // Respect default_station from config on first build (before localStorage overrides it)
     if (!this._built) {
       if (this._config.default_station != null && !localStorage.getItem('avery-bbc-station')) {
@@ -266,6 +317,25 @@ class AveryBBCRadioCard extends HTMLElement {
       this._build();
       this._built = true;
     }
+    this._applyConfig();
+  }
+
+  // Apply the standard Avery customisation params to the host / card.
+  _applyConfig() {
+    const c = this._config;
+    const set = (k, v) => (v ? this.style.setProperty(k, v) : this.style.removeProperty(k));
+    set('--am-accent', c.accent_color);
+    set('--am-glow-1', c.glow_color_1);
+    set('--am-glow-2', c.glow_color_2);
+    set('--am-glow-3', c.glow_color_3);
+    set('--am-radius', (c.corner_radius != null && c.corner_radius !== '') ? `${c.corner_radius}px` : null);
+    const card = this.shadowRoot && this.shadowRoot.getElementById('card');
+    if (card) {
+      card.classList.remove('theme-dark', 'theme-light', 'theme-dashboard');
+      card.classList.add(`theme-${c.theme || 'dashboard'}`);
+    }
+    const label = this.shadowRoot && this.shadowRoot.getElementById('liveLabel');
+    if (label) label.textContent = c.name || 'Live';
   }
 
   set hass(_) {}
@@ -279,6 +349,7 @@ class AveryBBCRadioCard extends HTMLElement {
 
     const slider = sr.getElementById('volSlider');
     slider.addEventListener('input', () => this._setVolume(Number(slider.value) / 100));
+    enableSliderDrag(slider.closest('.slider-wrap'), slider);
 
     sr.getElementById('playBtn').addEventListener('click', () => this._togglePlay());
     sr.getElementById('prevBtn').addEventListener('click', () =>
@@ -402,7 +473,7 @@ class AveryBBCRadioCard extends HTMLElement {
       navigator.mediaSession.metadata = new MediaMetadata({
         title: this._titleText(),
         artist: s.name,
-        album: 'BBC Radio',
+        album: this._config.name || 'BBC Radio',
         artwork: this._nowArt
           ? [{ src: this._nowArt, sizes: '480x480', type: 'image/jpeg' }]
           : [{ src: this._stationArtwork(this._current), sizes: '320x320', type: 'image/png' }],
@@ -510,112 +581,53 @@ class AveryBBCRadioCard extends HTMLElement {
 class AveryBBCRadioCardEditor extends HTMLElement {
   constructor() {
     super();
-    this._config = {};
-    this._built  = false;
+    this.attachShadow({ mode: 'open' });
+    this._config = { ...DEFAULT_CONFIG };
   }
+
+  set hass(hass) { this._hass = hass; }
 
   setConfig(config) {
-    this._config = config || {};
-    if (!this._built) { this._buildEditor(); this._built = true; }
-    this._populate();
+    this._config = { ...DEFAULT_CONFIG, ...(config || {}) };
+    if (!this._rendered) this._render();
   }
 
-  _buildEditor() {
-    // No shadow DOM — inherits HA's theme vars from the edit dialog
-    this.innerHTML = `
-<style>
-  avery-bbc-radio-card-editor {
-    display: block;
-    font-family: var(--mdc-typography-body1-font-family, Roboto, sans-serif);
-  }
-  avery-bbc-radio-card-editor .ed-wrap {
-    display: flex; flex-direction: column; gap: 16px; padding: 4px 0 8px;
-  }
-  avery-bbc-radio-card-editor .ed-field {
-    display: flex; flex-direction: column; gap: 6px;
-  }
-  avery-bbc-radio-card-editor .ed-label {
-    font-size: 11px; font-weight: 600; letter-spacing: .08em;
-    text-transform: uppercase; color: var(--secondary-text-color);
-  }
-  avery-bbc-radio-card-editor .ed-input {
-    width: 100%; box-sizing: border-box;
-    padding: 10px 12px;
-    border-radius: 8px;
-    border: 1px solid var(--divider-color, rgba(0,0,0,.15));
-    background: var(--secondary-background-color, transparent);
-    color: var(--primary-text-color);
-    font-size: 14px; font-family: inherit;
-    outline: none;
-    transition: border-color .15s, box-shadow .15s;
-  }
-  avery-bbc-radio-card-editor .ed-input:focus {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary-color) 18%, transparent);
-  }
-  avery-bbc-radio-card-editor .ed-row {
-    display: flex; align-items: center; gap: 10px;
-  }
-  avery-bbc-radio-card-editor .ed-row .ed-input { flex: 1 1 auto; }
-  avery-bbc-radio-card-editor .ed-ver {
-    text-align: center; font-size: 10px; font-weight: 600;
-    letter-spacing: .04em; opacity: .5; padding-top: 2px;
-    color: var(--secondary-text-color);
-  }
-  avery-bbc-radio-card-editor .ed-divider {
-    height: 1px; background: var(--divider-color, rgba(0,0,0,.1)); margin: 0;
-  }
-  avery-bbc-radio-card-editor .ed-section-title {
-    font-size: 13px; font-weight: 600; color: var(--primary-text-color);
-    margin: 0;
-  }
-  avery-bbc-radio-card-editor .ed-select {
-    width: 100%; box-sizing: border-box;
-    padding: 10px 12px;
-    border-radius: 8px;
-    border: 1px solid var(--divider-color, rgba(0,0,0,.15));
-    background: var(--secondary-background-color, transparent);
-    color: var(--primary-text-color);
-    font-size: 14px; font-family: inherit;
-    outline: none; cursor: pointer;
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23888'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 10px center;
-    background-size: 20px;
-    padding-right: 36px;
-  }
-</style>
-
-<div class="ed-wrap">
-  <p class="ed-section-title">Default Station</p>
-  <div class="ed-field">
-    <select class="ed-select" id="ed-station">
-      ${STATIONS.map((s, i) => `<option value="${i}">${s.name}</option>`).join('')}
-    </select>
-  </div>
-  <div class="ed-ver">Avery BBC Radio Card · v${CARD_VERSION}</div>
-</div>
-`;
-
-    const fire = () => {
-      const cfg = {
-        ...this._config,
-        default_station: parseInt(this.querySelector('#ed-station').value, 10),
-      };
-      this.dispatchEvent(new CustomEvent('config-changed', {
-        detail: { config: cfg },
-        bubbles: true, composed: true,
-      }));
-    };
-
-    this.querySelector('#ed-station').addEventListener('change', fire);
+  _render() {
+    const c = this._config;
+    this.shadowRoot.innerHTML = `<style>${AV_EDITOR_CSS}
+      .av-ed-ver { text-align:center; font-size:10px; font-weight:600; letter-spacing:.04em; opacity:.5; padding-top:6px; color:var(--secondary-text-color); }
+    </style>
+      ${section('General',
+        row('Name', textField('name', c, 'BBC Radio')) +
+        row('Default station', `<select data-field="default_station">${STATIONS.map((s, i) => `<option value="${i}" ${Number(c.default_station) === i ? 'selected' : ''}>${s.name}</option>`).join('')}</select>`) +
+        themeRow(c)
+      )}
+      ${colorsSection(c, BBC_COLORS)}
+      ${section('Dimensions',
+        row('Corner radius', numberField('corner_radius', c, { min: 0, max: 40, placeholder: '12' }))
+      )}
+      <div class="av-ed-ver">Avery BBC Radio Card · v${CARD_VERSION}</div>
+    `;
+    bindEditor(this.shadowRoot, {
+      hass: this._hass,
+      cfg: c,
+      update: (f, v) => {
+        if (f === 'default_station') v = Number(v);
+        this._config = { ...this._config, [f]: v };
+        this._fire();
+      },
+      rerender: () => this._render(),
+      colorDefaults: BBC_COLORS,
+    });
+    this._rendered = true;
   }
 
-  _populate() {
-    const sel = this.querySelector('#ed-station');
-    if (!sel) return;
-    sel.value = String(this._config.default_station ?? 0);
+  _fire() {
+    clearTimeout(this._timer);
+    this._timer = setTimeout(() => this.dispatchEvent(new CustomEvent('config-changed', {
+      detail: { config: { ...DEFAULT_CONFIG, ...this._config } },
+      bubbles: true, composed: true,
+    })), 180);
   }
 }
 
