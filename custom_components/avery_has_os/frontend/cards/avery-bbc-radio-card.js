@@ -1,11 +1,17 @@
 // avery-bbc-radio-card.js — browser HLS/stream player for BBC live radio.
 // Plays the public BBC streams directly; no BBC account/auth (that path is
 // CORS-blocked from a browser origin).
+//
+// v2.0 — playback lives in a module-level singleton ENGINE (audio element +
+// HLS + station/volume/metadata state) that survives HA view navigation, so
+// radio keeps playing when you switch views. Each card is a thin controller:
+// it renders the UI, drives the engine on user input, and re-syncs its UI from
+// the engine's state via a subscription. Same look and behaviour as before.
 import { AV_EDITOR_CSS, section, row, textField, themeRow, colorsSection, dimensionsSection, bindEditor } from './avery-card-editor.js?v=8';
 
 // Bump on every meaningful cut. Shown in the editor + logged on load so it's
 // always clear which build is loaded.
-const CARD_VERSION = '1.2';
+const CARD_VERSION = '2.0';
 
 // The HA iOS companion app (WKWebView) ignores HTMLMediaElement.volume and
 // can't route native-HLS audio through a Web Audio graph, so an on-screen
@@ -72,6 +78,194 @@ async function ensureHls() {
   _hlsLib = null;
   return null;
 }
+
+// ─── Playback engine (module-level singleton) ───────────────────────────────
+// Owns the one <audio> element + HLS instance + station/volume/playing/metadata
+// state. Because it lives at module scope (not inside any card's shadow DOM), it
+// keeps playing across HA view navigation. Cards subscribe() for state changes
+// and call its methods; it never touches card DOM.
+class BBCRadioEngine {
+  constructor() {
+    this.current = Math.min(
+      parseInt(localStorage.getItem('avery-bbc-station') || '0', 10) || 0,
+      STATIONS.length - 1
+    );
+    this.volume    = parseFloat(localStorage.getItem('avery-bbc-volume') || '0.7');
+    this.playing   = false;
+    this.nowPlaying = null;
+    this.nowArt     = null;
+    this._audio  = null;
+    this._hls    = null;
+    this._listeners = new Set();
+    this._metaToken = 0;
+    this._metaTimer = null;
+    this._artCache  = {};
+    this._inited    = false;
+  }
+
+  // Lazily create the audio element + start metadata polling on first card
+  // build. `defaultStation` seeds the station only when nothing is persisted.
+  ensureInit(defaultStation) {
+    if (this._inited) return;
+    this._inited = true;
+    if (!localStorage.getItem('avery-bbc-station') && defaultStation != null && defaultStation !== '') {
+      this.current = Math.min(parseInt(defaultStation, 10) || 0, STATIONS.length - 1);
+    }
+    this._audio = new Audio();
+    this._audio.addEventListener('play',  () => this._setPlaying(true));
+    this._audio.addEventListener('pause', () => this._setPlaying(false));
+    this._audio.addEventListener('ended', () => this._setPlaying(false));
+    this._audio.addEventListener('error', () => this._setPlaying(false));
+    this._applyVolume();
+    this._startMeta();
+    this._changed();   // seed the media-session widget + notify cards
+  }
+
+  subscribe(fn) { this._listeners.add(fn); return () => this._listeners.delete(fn); }
+  _notify() { for (const fn of this._listeners) { try { fn(); } catch (_) {} } }
+
+  titleText() { return this.nowPlaying || STATIONS[this.current].name; }
+
+  _setPlaying(p) {
+    this.playing = p;
+    if ('mediaSession' in navigator) navigator.mediaSession.playbackState = p ? 'playing' : 'paused';
+    this._notify();
+  }
+
+  _applyVolume() {
+    if (!this._audio) return;
+    // audio.volume is honoured on desktop, Android and iOS *Safari*, but the HA
+    // iOS companion app (WKWebView) ignores it outright — and Web Audio gain
+    // can't help either (iPhone decodes HLS natively, bypassing any JS graph).
+    // The one control every iOS webview honours is `muted`, so slider-to-zero
+    // mutes everywhere; fine volume in the app is the hardware buttons' job.
+    this._audio.volume = this.volume;
+    this._audio.muted  = this.volume <= 0;
+  }
+
+  setVolume(v) {
+    v = Math.max(0, Math.min(1, v));
+    this.volume = v;
+    this._applyVolume();
+    localStorage.setItem('avery-bbc-volume', String(v));
+    this._notify();
+  }
+
+  async selectStation(i, autoplay) {
+    this.current = i;
+    localStorage.setItem('avery-bbc-station', String(i));
+    this.nowPlaying = null; this.nowArt = null;
+    this._changed();
+    this._fetchMeta();
+    await this._loadStream(STATIONS[i].fallback);
+    if (autoplay) this.play();
+  }
+
+  async togglePlay() {
+    if (!this._audio.src && !this._hls) {
+      await this._loadStream(STATIONS[this.current].fallback);
+    }
+    if (this._audio.paused) this.play();
+    else this._audio.pause();
+  }
+
+  play() { return this._audio.play().catch(() => {}); }
+
+  async _loadStream(url) {
+    if (this._hls) { this._hls.destroy(); this._hls = null; }
+    this._audio.pause();
+    this._audio.src = '';
+
+    // Only .m3u8 URLs go through HLS.js; direct ICY/AAC/MP3 streams (e.g. World
+    // Service) play natively — HLS.js would choke on a non-HLS source.
+    const isHls = /\.m3u8(\?|$)/i.test(url);
+    const HLS = isHls ? await ensureHls() : null;
+    if (isHls && HLS && HLS.isSupported()) {
+      const h = new HLS({ maxBufferLength: 30, liveSyncDurationCount: 3, enableWorker: true });
+      h.loadSource(url);
+      h.attachMedia(this._audio);
+      this._hls = h;
+    } else {
+      // Direct stream (WS) or Safari native HLS. Anonymous — the public BBC
+      // streams answer with wildcard CORS, which the browser rejects for
+      // credentialed requests, so never send credentials.
+      this._audio.crossOrigin = 'anonymous';
+      this._audio.src = url;
+    }
+  }
+
+  // ── Metadata (server-side BBC proxy from the avery_has_os integration) ──────
+  async _fetchMeta() {
+    const station = STATIONS[this.current];
+    const token = ++this._metaToken;
+    try {
+      const r = await fetch(`/avery_has_os/bbc/nowplaying?service=${encodeURIComponent(station.vpid)}`);
+      if (!r.ok) throw new Error(String(r.status));
+      const d = await r.json();
+      if (token !== this._metaToken) return;   // station changed mid-flight
+      const line = d && d.line;
+      if (line && line !== this.nowPlaying) { this.nowPlaying = line; this.nowArt = d.image || null; this._changed(); }
+      else if (!line && this.nowPlaying)    { this.nowPlaying = null; this.nowArt = null; this._changed(); }
+      else if (line) { this.nowArt = d.image || null; }
+    } catch (_) {
+      if (token === this._metaToken && this.nowPlaying) { this.nowPlaying = null; this.nowArt = null; this._changed(); }
+    }
+  }
+
+  _startMeta() {
+    this._metaToken = 0;
+    clearInterval(this._metaTimer);
+    this._fetchMeta();
+    this._metaTimer = setInterval(() => this._fetchMeta(), 30000);
+  }
+
+  // Title/station changed → refresh the lock-screen widget and notify cards.
+  _changed() { this._updateMediaSession(); this._notify(); }
+
+  // ── Media Session (lock screen / Control Center) ────────────────────────────
+  _stationArtwork(i) {
+    if (this._artCache[i]) return this._artCache[i];
+    const s = STATIONS[i];
+    const c = document.createElement('canvas');
+    c.width = c.height = 320;
+    const g = c.getContext('2d');
+    const grd = g.createLinearGradient(0, 0, 320, 320);
+    grd.addColorStop(0, '#2a0d18'); grd.addColorStop(1, '#100810');
+    g.fillStyle = grd; g.fillRect(0, 0, 320, 320);
+    g.fillStyle = '#ff375f';
+    g.beginPath(); g.arc(160, 138, 96, 0, Math.PI * 2); g.fill();
+    g.fillStyle = '#fff';
+    g.textAlign = 'center'; g.textBaseline = 'middle';
+    g.font = '700 92px system-ui, sans-serif';
+    g.fillText(s.short, 160, 142);
+    g.font = '700 30px system-ui, sans-serif';
+    g.fillText('BBC RADIO', 160, 268);
+    return (this._artCache[i] = c.toDataURL('image/png'));
+  }
+
+  _updateMediaSession() {
+    if (!('mediaSession' in navigator)) return;
+    const s = STATIONS[this.current];
+    try {
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: this.titleText(),
+        artist: s.name,
+        album: 'BBC Radio',
+        artwork: this.nowArt
+          ? [{ src: this.nowArt, sizes: '480x480', type: 'image/jpeg' }]
+          : [{ src: this._stationArtwork(this.current), sizes: '320x320', type: 'image/png' }],
+      });
+    } catch (_) { /* MediaMetadata unsupported */ }
+    const set = (a, h) => { try { navigator.mediaSession.setActionHandler(a, h); } catch (_) {} };
+    set('play',  () => this.play());
+    set('pause', () => this._audio.pause());
+    set('stop',  () => this._audio.pause());
+    set('previoustrack', () => this.selectStation((this.current - 1 + STATIONS.length) % STATIONS.length, true));
+    set('nexttrack',     () => this.selectStation((this.current + 1) % STATIONS.length, true));
+  }
+}
+
+const ENGINE = new BBCRadioEngine();
 
 const TMPL = document.createElement('template');
 TMPL.innerHTML = `
@@ -277,34 +471,23 @@ TMPL.innerHTML = `
   </div>
   <div class="chips" id="chips"></div>
 </div>
-<audio id="audio"></audio>
 `;
 
 class AveryBBCRadioCard extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
-    this._current = Math.min(
-      parseInt(localStorage.getItem('avery-bbc-station') || '0', 10),
-      STATIONS.length - 1
-    );
-    this._volume   = parseFloat(localStorage.getItem('avery-bbc-volume') || '0.7');
-    this._playing  = false;
-    this._hls      = null;
-    this._built    = false;
-    this._config   = {};
+    this._built  = false;
+    this._config = {};
+    this._unsub  = null;
+    this._draggingVol = false;
+    this._lastTitle   = null;
+    this._lastPlaying = null;
   }
 
   setConfig(config) {
     this._config = { ...DEFAULT_CONFIG, ...(config || {}) };
-    // Respect default_station from config on first build (before localStorage overrides it)
-    if (!this._built) {
-      if (this._config.default_station != null && !localStorage.getItem('avery-bbc-station')) {
-        this._current = Math.min(parseInt(this._config.default_station, 10), STATIONS.length - 1);
-      }
-      this._build();
-      this._built = true;
-    }
+    if (!this._built) { this._build(); this._built = true; }
     this._applyConfig();
   }
 
@@ -332,35 +515,52 @@ class AveryBBCRadioCard extends HTMLElement {
   _build() {
     const sr = this.shadowRoot;
     sr.appendChild(TMPL.content.cloneNode(true));
+    this._card = sr.getElementById('card');
 
-    this._audio = sr.getElementById('audio');
-    this._card  = sr.getElementById('card');
+    // Bring the shared engine to life (idempotent) — seeds the station from
+    // this card's default_station only if nothing's persisted yet.
+    ENGINE.ensureInit(this._config.default_station);
 
     // On iOS the slider can't set stream volume (WKWebView ignores it; native
     // HLS bypasses Web Audio) — hide it and let the hardware buttons own volume.
     if (IS_IOS) sr.getElementById('volWell').hidden = true;
 
     const slider = sr.getElementById('volSlider');
-    const onVol = (e) => this._setVolume(Number(e.target.value) / 100, true);
-    slider.addEventListener('input', onVol);   // live during drag
-    slider.addEventListener('change', onVol);  // committed
+    const onVol = (e) => {
+      // Mark a live drag so our own re-sync doesn't fight the thumb; clears
+      // shortly after the last input (covers release outside the element too).
+      this._draggingVol = true;
+      clearTimeout(this._volIdle);
+      this._volIdle = setTimeout(() => { this._draggingVol = false; }, 500);
+      ENGINE.setVolume(Number(e.target.value) / 100);
+    };
+    slider.addEventListener('input', onVol);
+    slider.addEventListener('change', onVol);
 
-    sr.getElementById('playBtn').addEventListener('click', () => this._togglePlay());
+    sr.getElementById('playBtn').addEventListener('click', () => ENGINE.togglePlay());
     sr.getElementById('prevBtn').addEventListener('click', () =>
-      this._selectStation((this._current - 1 + STATIONS.length) % STATIONS.length, this._playing));
+      ENGINE.selectStation((ENGINE.current - 1 + STATIONS.length) % STATIONS.length, ENGINE.playing));
     sr.getElementById('nextBtn').addEventListener('click', () =>
-      this._selectStation((this._current + 1) % STATIONS.length, this._playing));
-
-    this._audio.addEventListener('play',  () => this._setPlaying(true));
-    this._audio.addEventListener('pause', () => this._setPlaying(false));
-    this._audio.addEventListener('ended', () => this._setPlaying(false));
-    this._audio.addEventListener('error', () => this._setPlaying(false));
+      ENGINE.selectStation((ENGINE.current + 1) % STATIONS.length, ENGINE.playing));
 
     this._renderChips();
-    this._updateInfo();
-    this._setVolume(this._volume);
-    this._setCardState();
-    this._startMeta();
+    this._subscribe();
+    this._syncUI();
+  }
+
+  connectedCallback() {
+    // Re-subscribe + re-sync when this card is re-attached on a view change —
+    // the engine (and its audio) kept running the whole time.
+    if (this._built) { this._subscribe(); this._syncUI(); }
+  }
+
+  disconnectedCallback() {
+    // Only detach this card's subscription — never stop the engine.
+    if (this._unsub) { this._unsub(); this._unsub = null; }
+  }
+
+  _subscribe() {
+    if (!this._unsub) this._unsub = ENGINE.subscribe(() => this._syncUI());
   }
 
   _renderChips() {
@@ -369,215 +569,58 @@ class AveryBBCRadioCard extends HTMLElement {
     el.innerHTML = '';
     STATIONS.forEach((s, i) => {
       const b = document.createElement('button');
-      b.className = 'chip' + (i === this._current ? ' active' : '');
+      b.className = 'chip' + (i === ENGINE.current ? ' active' : '');
       b.textContent = s.short;
       b.title = s.name;
-      b.addEventListener('click', () => this._selectStation(i, true));
+      b.addEventListener('click', () => ENGINE.selectStation(i, true));
       el.appendChild(b);
     });
   }
 
-  _titleText() {
-    // Live programme/track line from the avery_has_os proxy if present, else
-    // the station name.
-    return this._nowPlaying || STATIONS[this._current].name;
-  }
+  // Change-gated re-render of this card's UI from engine state (fires on every
+  // engine notify — keep it cheap and idempotent).
+  _syncUI() {
+    const title = ENGINE.titleText();
+    if (title !== this._lastTitle) { this._lastTitle = title; this._renderTitle(title); }
 
-  // Poll the integration's server-side BBC proxy for the current programme/track.
-  // Degrades silently to the station name if the integration isn't installed
-  // (the endpoint 404s) or the request fails.
-  async _fetchMeta() {
-    const station = STATIONS[this._current];
-    const token = ++this._metaToken;
-    try {
-      const r = await fetch(`/avery_has_os/bbc/nowplaying?service=${encodeURIComponent(station.vpid)}`);
-      if (!r.ok) throw new Error(String(r.status));
-      const d = await r.json();
-      if (token !== this._metaToken) return; // station changed mid-flight
-      const line = d && d.line;
-      if (line && line !== this._nowPlaying) { this._nowPlaying = line; this._nowArt = d.image || null; this._updateInfo(); }
-      else if (!line && this._nowPlaying) { this._nowPlaying = null; this._nowArt = null; this._updateInfo(); }
-      else if (line) { this._nowArt = d.image || null; }
-    } catch (_) {
-      if (token === this._metaToken && this._nowPlaying) { this._nowPlaying = null; this._nowArt = null; this._updateInfo(); }
+    const chips = this.shadowRoot.querySelectorAll('.chip');
+    chips.forEach((c, i) => c.classList.toggle('active', i === ENGINE.current));
+
+    if (this._lastPlaying !== ENGINE.playing) {
+      this._lastPlaying = ENGINE.playing;
+      if (this._card) this._card.classList.toggle('playing', ENGINE.playing);
+      const dot = this.shadowRoot.getElementById('liveDot');
+      if (dot) ENGINE.playing ? dot.removeAttribute('hidden') : dot.setAttribute('hidden', '');
     }
-  }
 
-  _startMeta() {
-    this._metaToken = 0;
-    clearInterval(this._metaTimer);
-    this._fetchMeta();
-    this._metaTimer = setInterval(() => this._fetchMeta(), 30000);
-  }
-
-  disconnectedCallback() {
-    clearInterval(this._metaTimer);
-  }
-
-  _updateInfo() {
-    const el = this.shadowRoot.getElementById('stationName');
-    if (el) {
-      el.textContent = '';
-      const span = document.createElement('span');
-      span.className = 'marq';
-      span.textContent = this._titleText();
-      el.appendChild(span);
-      // Scroll (ping-pong) only when the title overflows its box.
-      requestAnimationFrame(() => {
-        el.classList.remove('scroll');
-        const overflow = span.scrollWidth - el.clientWidth;
-        if (overflow > 4) {
-          el.style.setProperty('--marq-shift', `-${overflow + 8}px`);
-          el.style.setProperty('--marq-dur', `${Math.max(6, (overflow + 8) / 22)}s`);
-          el.classList.add('scroll');
-        }
-      });
-    }
-    this._renderChips();
-    this._updateMediaSession();
-  }
-
-  // Canvas-drawn raster cover so the iOS lock screen / widget has real artwork
-  // (BBC only exposes SVG; iOS wants raster). Cached per station.
-  _stationArtwork(i) {
-    this._artCache = this._artCache || {};
-    if (this._artCache[i]) return this._artCache[i];
-    const s = STATIONS[i];
-    const c = document.createElement('canvas');
-    c.width = c.height = 320;
-    const g = c.getContext('2d');
-    const grd = g.createLinearGradient(0, 0, 320, 320);
-    grd.addColorStop(0, '#2a0d18'); grd.addColorStop(1, '#100810');
-    g.fillStyle = grd; g.fillRect(0, 0, 320, 320);
-    g.fillStyle = '#ff375f';
-    g.beginPath(); g.arc(160, 138, 96, 0, Math.PI * 2); g.fill();
-    g.fillStyle = '#fff';
-    g.textAlign = 'center'; g.textBaseline = 'middle';
-    g.font = '700 92px system-ui, sans-serif';
-    g.fillText(s.short, 160, 142);
-    g.font = '700 30px system-ui, sans-serif';
-    g.fillText('BBC RADIO', 160, 268);
-    return (this._artCache[i] = c.toDataURL('image/png'));
-  }
-
-  _updateMediaSession() {
-    if (!('mediaSession' in navigator)) return;
-    const s = STATIONS[this._current];
-    try {
-      navigator.mediaSession.metadata = new MediaMetadata({
-        title: this._titleText(),
-        artist: s.name,
-        album: this._config.name || 'BBC Radio',
-        artwork: this._nowArt
-          ? [{ src: this._nowArt, sizes: '480x480', type: 'image/jpeg' }]
-          : [{ src: this._stationArtwork(this._current), sizes: '320x320', type: 'image/png' }],
-      });
-    } catch (_) { /* MediaMetadata unsupported */ }
-    const set = (a, h) => { try { navigator.mediaSession.setActionHandler(a, h); } catch (_) {} };
-    set('play',  () => this._audio.play().catch(() => {}));
-    set('pause', () => this._audio.pause());
-    set('stop',  () => this._audio.pause());
-    set('previoustrack', () => this._selectStation((this._current - 1 + STATIONS.length) % STATIONS.length, true));
-    set('nexttrack',     () => this._selectStation((this._current + 1) % STATIONS.length, true));
-  }
-
-  _setPlaying(playing) {
-    this._playing = playing;
-    this._setCardState();
-    if ('mediaSession' in navigator) navigator.mediaSession.playbackState = playing ? 'playing' : 'paused';
-    const dot = this.shadowRoot.getElementById('liveDot');
-    if (dot) playing ? dot.removeAttribute('hidden') : dot.setAttribute('hidden', '');
-  }
-
-  _setCardState() {
-    if (!this._card) return;
-    this._card.classList.toggle('playing', this._playing);
-  }
-
-  _setVolume(v, fromSlider) {
-    v = Math.max(0, Math.min(1, v));
-    this._volume = v;
-    if (this._audio) {
-      // audio.volume is honoured on desktop, Android and iOS *Safari*, but the
-      // HA iOS companion app (WKWebView) ignores it outright — and Web Audio
-      // gain can't help there either, because on iPhone HLS is decoded natively
-      // (no MSE) so it never flows through a JS audio graph. The one volume
-      // control every iOS webview honours is `muted`, so slider-to-zero mutes
-      // everywhere; fine volume in the app is the hardware buttons' job.
-      this._audio.volume = v;
-      this._audio.muted = v <= 0;
-    }
-    localStorage.setItem('avery-bbc-volume', String(v));
-    const pct = Math.round(v * 100);
+    const pct = Math.round(ENGINE.volume * 100);
     const sl  = this.shadowRoot.getElementById('volSlider');
     const val = this.shadowRoot.getElementById('volVal');
     if (sl) {
-      if (!fromSlider) sl.value = pct;   // don't fight the user's drag
+      if (!this._draggingVol && Number(sl.value) !== pct) sl.value = pct;
       sl.style.setProperty('--val', pct + '%');
     }
-    if (val) val.textContent = String(pct);
+    if (val && val.textContent !== String(pct)) val.textContent = String(pct);
   }
 
-  // The public https stream for a station.
-  _streamUrl(station) {
-    return station.fallback;
-  }
-
-  async _loadStream(url) {
-    if (this._hls) { this._hls.destroy(); this._hls = null; }
-    this._audio.pause();
-    this._audio.src = '';
-
-    // Only .m3u8 URLs go through HLS.js; direct ICY/AAC/MP3 streams (e.g. World
-    // Service) play natively — HLS.js would choke on a non-HLS source.
-    const isHls = /\.m3u8(\?|$)/i.test(url);
-    const HLS = isHls ? await ensureHls() : null;
-    if (isHls && HLS && HLS.isSupported()) {
-      const h = new HLS({
-        maxBufferLength: 30,
-        liveSyncDurationCount: 3,
-        enableWorker: true,
-        // Fetch anonymously. The public BBC HLS streams answer with
-        // `Access-Control-Allow-Origin: *`, which the browser REJECTS for
-        // credentialed (withCredentials) requests — that combination is what
-        // blocked all playback. Credentials would only matter for an
-        // authenticated MediaSelector URL, and that path is CORS-blocked from a
-        // browser origin anyway.
-      });
-      h.loadSource(url);
-      h.attachMedia(this._audio);
-      this._hls = h;
-    } else {
-      // Direct stream (WS) or Safari native HLS. Anonymous, same wildcard-CORS
-      // reason as above.
-      this._audio.crossOrigin = 'anonymous';
-      this._audio.src = url;
-    }
-  }
-
-  async _selectStation(i, autoplay) {
-    this._current = i;
-    localStorage.setItem('avery-bbc-station', String(i));
-    this._nowPlaying = null; this._nowArt = null;
-    this._updateInfo();
-    this._fetchMeta();
-    await this._loadStream(this._streamUrl(STATIONS[i]));
-    if (autoplay) this._play();
-  }
-
-  async _togglePlay() {
-    if (!this._audio.src && !this._hls) {
-      await this._loadStream(this._streamUrl(STATIONS[this._current]));
-    }
-    if (this._audio.paused) {
-      this._play();
-    } else {
-      this._audio.pause();
-    }
-  }
-
-  _play() {
-    return this._audio.play().catch(() => {});
+  _renderTitle(title) {
+    const el = this.shadowRoot.getElementById('stationName');
+    if (!el) return;
+    el.textContent = '';
+    const span = document.createElement('span');
+    span.className = 'marq';
+    span.textContent = title;
+    el.appendChild(span);
+    // Scroll (ping-pong) only when the title overflows its box.
+    requestAnimationFrame(() => {
+      el.classList.remove('scroll');
+      const overflow = span.scrollWidth - el.clientWidth;
+      if (overflow > 4) {
+        el.style.setProperty('--marq-shift', `-${overflow + 8}px`);
+        el.style.setProperty('--marq-dur', `${Math.max(6, (overflow + 8) / 22)}s`);
+        el.classList.add('scroll');
+      }
+    });
   }
 
   static getConfigElement() { return document.createElement('avery-bbc-radio-card-editor'); }
@@ -645,7 +688,7 @@ window.customCards = window.customCards || [];
 window.customCards.push({
   type: 'avery-bbc-radio-card',
   name: 'Avery BBC Radio',
-  description: 'Live BBC radio player — 9 stations, plays in the browser.',
+  description: 'Live BBC radio player — 9 stations, plays in the browser, persists across views.',
   preview: false,
   version: CARD_VERSION,
 });
